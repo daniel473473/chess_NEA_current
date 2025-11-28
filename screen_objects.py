@@ -1,5 +1,6 @@
 import pygame
 import Pac_man_colours
+import Pac_man_side
 
 # things to set up for the whole game
 pygame.init()
@@ -68,12 +69,25 @@ class High_Score_Button(Button):
         global current_screen
         current_screen = screen2
 
+class Game_Button(Button):
+    def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
+        super().__init__(x, y, x_size, y_size, base_colour, selected_colour, text, text_size)
+
+    def click(self):
+        global current_screen
+        current_screen = game_screen
+        current_screen.reset()
+        current_screen.play(screen1.depth)
+        current_screen = screen1
+
 
 class Slider(Button):
-    def __init__(self, x, y, x_base, y_base, x_size, y_size, x_button_size, y_button_size, base_colour, selected_colour, options, text, text_size=None):
+    def __init__(self, x, y, x_base, y_base, x_size, y_size, x_button_size, y_button_size, base_colour, selected_colour, options, text, text_size=None, ID = None):
+        self.ID = ID
+        
         # change the text before initialising the button
         self.base_text = text
-        text = self.base_text + " : 0"
+        text = self.base_text + " : 1"
         
         super().__init__(x, y, x_button_size, y_button_size, base_colour, selected_colour, text, text_size)
         
@@ -89,16 +103,16 @@ class Slider(Button):
 
 
 
-
     def update(self):
-        super().update()
+        if not self.selected:
+            super().update()
         if self.selected:
             x = pygame.mouse.get_pos()[0] - self.x_size * 0.5
             if x > self.x_base and x < self.x_base + self.x_base_size:
                 self.x_pos = x
                 self.rect.x = x
                 self.image.fill(self.base_colour)
-                self.text = self.base_text + " : " + str(int((self.x_pos - self.x_base)//self.option_range))
+                self.text = self.base_text + " : " + str(round((self.x_pos - self.x_base)/self.option_range) + 1)
                 self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
                 self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
             else:
@@ -122,6 +136,14 @@ class Slider(Button):
         if not self.selected:
             self.x_pos = round((self.x_pos - self.x_base)/self.option_range) * self.option_range + self.x_base
             self.rect.x = self.x_pos
+
+            # update the text for where it snapped to
+            self.image.fill(self.base_colour)
+            self.text = self.base_text + " : " + str(round((self.x_pos - self.x_base)/self.option_range) + 1)
+            self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
+            self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+
+        return [round((self.x_pos - self.x_base)/self.option_range) + 1, self.ID]
 
 
 class Text_Box((pygame.sprite.Sprite)):
@@ -160,8 +182,18 @@ class Base_Screen:
         # group of all of the buttons on the screen
         self.buttons = pygame.sprite.Group()
 
+        # group of all of the sliders on the screen
+        self.sliders = pygame.sprite.Group()
+
         # group of all of the images on the screen including text
         self.images = pygame.sprite.Group()
+
+        # any data that the screen needs to store
+        self.data = []
+
+
+    def check_data(self): # function to be replaced by inherited classes to work with any stored data
+        pass
 
 
     def play_step(self):
@@ -173,20 +205,37 @@ class Base_Screen:
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
 
-                # get a list of all sprites that are under the mouse cursor
+                # get a list of all buttons that are under the mouse cursor
                 pressed_buttons = [button for button in self.buttons if button.rect.collidepoint(pos)]
                 
                 for button in pressed_buttons:
                     button.click()
 
+                # get a list of all sliders that are under the mouse cursor
+                pressed_sliders = [slider for slider in self.sliders if slider.rect.collidepoint(pos)]
+                
+                # reset the data when more is added
+                self.data = []
+
+                for slider in pressed_sliders:
+                    self.data.append(slider.click())
+
+                self.check_data()
+
+
+
         # update the sprites
         self.buttons.update()
+        self.sliders.update()
 
         # draw the background of the screen
         screen.fill(self.SURFACE_COLOUR)
 
         # draw all of the buttons
         self.buttons.draw(screen)
+
+        # draw all of the sliders
+        self.sliders.draw(screen)
 
         # draw all of the non button images
         self.images.draw(screen)
@@ -205,15 +254,23 @@ class High_Score_Screen(Base_Screen):
 class Main_Menu_Screen(Base_Screen):
     def __init__(self):
         super().__init__()
+        self.depth = 1
 
         # add a button to go to the high score screen
         self.buttons.add(High_Score_Button(WIDTH * 0.2, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "High Scores"))
-        self.buttons.add(Slider(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.5, HEIGHT * 0.1, WIDTH * 0.3, HEIGHT * 0.2, Pac_man_colours.BLUE, Pac_man_colours.LIGHT_GREEN, 4, "Difficulty"))
+        self.sliders.add(Slider(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.5, HEIGHT * 0.1, WIDTH * 0.3, HEIGHT * 0.2, Pac_man_colours.BLUE, Pac_man_colours.LIGHT_GREEN, 3, "Skill", ID="Depth"))
+        self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play"))
         self.images.add(Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, "Welcome to Chess-Man", int(HEIGHT * 0.1)))
+
+    def check_data(self):
+        for item in self.data:
+            if item[-1] == "Depth":
+                self.depth = item[0]
 
 if __name__ == "__main__":
     screen1 = Main_Menu_Screen()
     screen2 = High_Score_Screen()
+    game_screen = Pac_man_side.Pacman_chess_game()
     current_screen = screen1
     while True:
         current_screen.play_step()
