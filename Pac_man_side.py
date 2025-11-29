@@ -40,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         self.height = height
         super().__init__()
         self.image = pygame.Surface([width, height])
-        picture = pygame.image.load("Chess_White_Pawn.png").convert()
+        picture = pygame.image.load("Chess_Gray_King.png").convert_alpha()
         picture = pygame.transform.scale(picture, (width, height))
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
