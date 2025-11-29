@@ -1,6 +1,8 @@
 import pygame
 import Pac_man_colours
 import Pac_man_side
+import sys
+
 
 # things to set up for the whole game
 pygame.init()
@@ -200,8 +202,7 @@ class Base_Screen:
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                exit()
-                self.game_over = True
+                sys.exit()
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
 

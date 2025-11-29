@@ -5,6 +5,8 @@ import Pac_man_colours
 import chess_main
 import time
 from CHESS import chess
+import helper_functions
+import sys
 # things to set up for the whole game
 pygame.init()
 # GLOBAL VARIABLES
@@ -40,11 +42,11 @@ class Player(pygame.sprite.Sprite):
         self.height = height
         super().__init__()
         self.image = pygame.Surface([width, height])
-        picture = pygame.image.load("Chess_Gray_King.png").convert_alpha()
-        picture = pygame.transform.scale(picture, (width, height))
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
         pygame.draw.rect(self.image,color,pygame.Rect(0, 0, width, height))
+        picture = pygame.image.load(helper_functions.resource_path("pngs\Chess_Gray_King.png")).convert_alpha()
+        picture = pygame.transform.scale(picture, (width, height))
         self.image.blit(picture, self.image.get_rect())
         self.rect = self.image.get_rect()
         self.rect.x = self.x
@@ -122,7 +124,7 @@ class Energizer(pygame.sprite.Sprite):
 class Chess_Piece(pygame.sprite.Sprite):
   pieces_moving = []
 
-  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, time_to_move = 60, name = ""):
+  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, time_to_move = 60, name = "", sprite_path = None):
         # what is the current movement
         self.x_speed = 0
         self.y_speed = 0
@@ -140,21 +142,28 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.actual_y = y
         self.board_x = board_x
         self.board_y = board_y
+        self.sprite_path = sprite_path
         # set up the sprite
         super().__init__()
         self.image = pygame.Surface([size, size])
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
         pygame.draw.rect(self.image, self.colour, pygame.Rect(0, 0, size, size))
+        if not sprite_path is None:
+          self.picture = pygame.image.load(helper_functions.resource_path(sprite_path)).convert_alpha()
+          self.picture = pygame.transform.scale(self.picture, (size, size))
+          self.image.blit(self.picture, self.image.get_rect())
+        else:
+          # temporary draw text of the name of the piece
+          self.font = pygame.font.Font(None, int(size/2))
+          self.text_sprite = self.font.render((self.name), True, Pac_man_colours.WHITE)
+          self.image_center = self.image.get_rect().center
+          self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-        # temporary draw text of the name of the piece
-        self.font = pygame.font.Font(None, int(size/2))
-        self.text_sprite = self.font.render((self.name), True, Pac_man_colours.WHITE)
-        self.image_center = self.image.get_rect().center
-        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+
   
   
   def move_to(self, x, y):
@@ -164,7 +173,10 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.target_y = y
         self.moving = True
         self.image.fill(self.moving_colour)
-        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+        if not self.sprite_path is None:
+          self.image.blit(self.picture, self.image.get_rect())
+        else:
+           self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
         Chess_Piece.pieces_moving.append(True)
   
   
@@ -179,7 +191,10 @@ class Chess_Piece(pygame.sprite.Sprite):
             self.y_speed = 0
             self.moving = False
             self.image.fill(self.colour)
-            self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+            if not self.sprite_path is None:
+              self.image.blit(self.picture, self.image.get_rect())
+            else:
+               self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
             Chess_Piece.pieces_moving.pop()
             #self.move_to(random.random() * (WIDTH - self.size), random.random() * (HEIGHT - self.size))
         else:
@@ -359,17 +374,21 @@ class Pacman_chess_game():
 
     # black pieces
     blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
+    black_file_paths = ["pngs\Chess_Black_Rook.png", "pngs\Chess_Black_Knight.png", "pngs\Chess_Black_Bishop.png", "pngs\Chess_Black_Queen.png", "pngs\Chess_Black_King.png", "pngs\Chess_Black_Bishop.png", "pngs\Chess_Black_Knight.png", "pngs\Chess_Black_Rook.png",
+                         "pngs\chess_black_pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png"]
     whitenames = ["WR", "WN", "WB", "WK", "WQ", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
+    white_file_paths = ["pngs\Chess_White_Rook.png", "pngs\Chess_White_Knight.png", "pngs\Chess_White_Bishop.png", "pngs\Chess_White_King.png", "pngs\Chess_White_Queen.png", "pngs\Chess_White_Bishop.png", "pngs\Chess_White_Knight.png", "pngs\Chess_White_Rook.png",
+                        "pngs\chess_white_pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png"]
+    # black pieces
     for i in range(16):
-        
-        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.LIGHT_RED, name = blacknames[i])
+        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.LIGHT_RED, name = blacknames[i], sprite_path= black_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[i//8][i%8] = piece
 
     # white pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.LIGHT_GREEN, name = whitenames[i])
+        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.LIGHT_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[7 - (i//8)][7 - (i%8)] = piece
@@ -478,7 +497,7 @@ class Pacman_chess_game():
   def play_step(self):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
-          exit()
+          sys.exit()
           self.game_over = True
       elif event.type == pygame.KEYDOWN:
         if event.key == K_DOWN:
