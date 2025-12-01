@@ -11,7 +11,7 @@ import math
 
 # TODO 50 move rule
 # TODO repetition
-# TODO suffixes for castling
+# TODO suffixes for castling and stop casting in check
 
 def underline(text):
     return f"\033[4m{text}\033[0m"# under line the text

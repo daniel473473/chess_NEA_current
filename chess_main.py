@@ -109,7 +109,7 @@ def score_position(game, turn):
                                         ][row][column]
             piece_score /= 100
             if piece.code != constants.KING_CODE:
-                piece_score += piece.value
+                piece_score += piece.value * 10
             if piece.player == player:
                 player_score += piece_score
             else:
@@ -381,4 +381,4 @@ def play_game(depth, show = False):
 
 if __name__ == "__main__":
     while True:
-        play_game(2, show=True)
+        play_game(3, show=True)
