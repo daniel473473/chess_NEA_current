@@ -276,6 +276,9 @@ def play_game(depth, show = False):
     # moves used index 0 end pos index 1 start pos
     moves_used = []
 
+    # codes for the moves to be displayed at the top of the screen
+    move_codes = []
+
     boards = [copy.deepcopy(board.board)]
 
     # temp board sync stuff
@@ -336,6 +339,8 @@ def play_game(depth, show = False):
         boards.append(copy.deepcopy(board.board))
 
         # add the used moves the list of moves
+        move_codes.append(code)
+
         if encoded_code not in ["0-0", "0-0-0"]:
             moves_used.append(encoded_code[1:3])
         else:
@@ -372,7 +377,7 @@ def play_game(depth, show = False):
         board.display(board.board)
         print(f"Game Over {'White' if board.turn % 2 == 0 else 'Black'} wins")
         print(moves_used)
-    return moves_used, boards
+    return moves_used, boards, move_codes
 
 if __name__ == "__main__":
     while True:

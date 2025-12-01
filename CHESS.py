@@ -7,14 +7,8 @@ import time
 import math
 
 
-# TODO check for all legal moves being checked Qf3 and Qh5#
-# TODO correct disambiguation
-# return false if disambiguated when not needed
-# return false is not disambiguated when needed
-# disambiguate the list of possible moves
-# TODO checks working properly
-# TODO undo properly
-# TODO GUI
+
+
 # TODO 50 move rule
 # TODO repetition
 # TODO suffixes for castling
