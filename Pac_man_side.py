@@ -45,7 +45,7 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
         pygame.draw.rect(self.image,color,pygame.Rect(0, 0, width, height))
-        picture = pygame.image.load(helper_functions.resource_path("pngs\Chess_Gray_King.png")).convert_alpha()
+        picture = pygame.image.load(helper_functions.resource_path("pngs/Chess_Gray_King.png")).convert_alpha()
         picture = pygame.transform.scale(picture, (width, height))
         self.image.blit(picture, self.image.get_rect())
         self.rect = self.image.get_rect()
@@ -374,11 +374,11 @@ class Pacman_chess_game():
 
     # black pieces
     blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
-    black_file_paths = ["pngs\Chess_Black_Rook.png", "pngs\Chess_Black_Knight.png", "pngs\Chess_Black_Bishop.png", "pngs\Chess_Black_Queen.png", "pngs\Chess_Black_King.png", "pngs\Chess_Black_Bishop.png", "pngs\Chess_Black_Knight.png", "pngs\Chess_Black_Rook.png",
-                         "pngs\chess_black_pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png", "pngs\Chess_Black_Pawn.png"]
+    black_file_paths = ["pngs/Chess_Black_Rook.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Queen.png", "pngs/Chess_Black_King.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Rook.png",
+                         "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png"]
     whitenames = ["WR", "WN", "WB", "WK", "WQ", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
-    white_file_paths = ["pngs\Chess_White_Rook.png", "pngs\Chess_White_Knight.png", "pngs\Chess_White_Bishop.png", "pngs\Chess_White_King.png", "pngs\Chess_White_Queen.png", "pngs\Chess_White_Bishop.png", "pngs\Chess_White_Knight.png", "pngs\Chess_White_Rook.png",
-                        "pngs\chess_white_pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png", "pngs\Chess_White_Pawn.png"]
+    white_file_paths = ["pngs/Chess_White_Rook.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_King.png", "pngs/Chess_White_Queen.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Rook.png",
+                        "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png"]
     # black pieces
     for i in range(16):
         piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.LIGHT_RED, name = blacknames[i], sprite_path= black_file_paths[i])
