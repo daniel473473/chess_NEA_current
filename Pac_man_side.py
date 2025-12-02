@@ -589,6 +589,7 @@ class Pacman_chess_game():
     #print(time.time() - start_time)
     while not self.game_over:
           self.play_step()
+    return self.points
 
 if __name__ == "__main__":
     game = Pacman_chess_game()
