@@ -1,7 +1,6 @@
 import pygame
 import Pac_man_colours
 import Pac_man_side
-import helper_functions
 import sys
 
 
@@ -70,7 +69,7 @@ class High_Score_Button(Button):
 
     def click(self):
         global current_screen
-        current_screen = high_score_screen
+        current_screen = screen2
 
 class Game_Button(Button):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
@@ -80,20 +79,8 @@ class Game_Button(Button):
         global current_screen
         current_screen = game_screen
         current_screen.reset()
-        score = current_screen.play(main_menu.depth)
-        data = helper_functions.load_data("high_scores.json")
-        data["scores"].append({"score": score})
-        helper_functions.store_data("high_scores.json", data)
-        current_screen = play_again_screen
-        play_again_screen.update_score(score)
-
-class Main_Menu_Button(Button):
-    def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
-        super().__init__(x, y, x_size, y_size, base_colour, selected_colour, text, text_size)
-
-    def click(self):
-        global current_screen
-        current_screen = main_menu
+        current_screen.play(screen1.depth)
+        current_screen = screen1
 
 
 class Slider(Button):
@@ -186,12 +173,6 @@ class Text_Box((pygame.sprite.Sprite)):
         self.image_center = self.image.get_rect().center
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
-    def update_text(self, text):
-        self.text = text
-        self.image.fill(self.colour)
-        self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
-        self.image_center = self.image.get_rect().center
-        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
 
 
@@ -269,10 +250,7 @@ class Base_Screen:
 class High_Score_Screen(Base_Screen):
     def __init__(self):
         super().__init__()
-        self.scores = helper_functions.load_data("high_scores.json")["scores"]
-
-    def get_scores(self):# load all of the high score data
-        self.scores = helper_functions.load_data("high_scores.json")["scores"]
+        self.SURFACE_COLOUR = Pac_man_colours.BLUE
 
 class Main_Menu_Screen(Base_Screen):
     def __init__(self):
@@ -290,27 +268,10 @@ class Main_Menu_Screen(Base_Screen):
             if item[-1] == "Depth":
                 self.depth = item[0]
 
-class Play_Again_Screen(Base_Screen):
-    def __init__(self):
-        super().__init__()
-        self.score = 0
-        self.buttons.add(Main_Menu_Button(WIDTH * 0.2, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Main Menu"))
-        self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.3, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play Again"))
-        self.score_box = Text_Box(WIDTH * 0.15, HEIGHT * 0.2, WIDTH * 0.7, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Game Over Your Score Was : {self.score}", int(HEIGHT * 0.1))
-        self.images.add(self.score_box)
-
-
-    def update_score(self, score):
-        self.score = score
-        self.score_box.update_text(f"Game Over Your Score Was {self.score}")
-        
-
 if __name__ == "__main__":
-    main_menu = Main_Menu_Screen()
-    high_score_screen = High_Score_Screen()
+    screen1 = Main_Menu_Screen()
+    screen2 = High_Score_Screen()
     game_screen = Pac_man_side.Pacman_chess_game()
-    play_again_screen = Play_Again_Screen()
-    current_screen = main_menu
+    current_screen = screen1
     while True:
         current_screen.play_step()
-    #current_screen.buttons.sprites()[1].click()
