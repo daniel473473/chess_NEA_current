@@ -223,7 +223,7 @@ class Base_Screen:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONUP:
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 pos = pygame.mouse.get_pos()
 
                 # get a list of all buttons that are under the mouse cursor
@@ -270,10 +270,22 @@ class Base_Screen:
 class High_Score_Screen(Base_Screen):
     def __init__(self):
         super().__init__()
-        self.scores = helper_functions.load_data("high_scores.json")["scores"]
+        self.scroll = 0
+        self.score_seperation = HEIGHT * 0.1
+        self.buttons.add(Main_Menu_Button(WIDTH * 0.85, HEIGHT * 0.2, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Main Menu"))
+        self.score_sprite = Text_Box(WIDTH * 0.2, HEIGHT * 0.2, WIDTH * 0.6, HEIGHT * 0.7, Pac_man_colours.GRAY, "", text_size= int(HEIGHT * 0.1))
+        self.images.add(self.score_sprite)
+        self.get_scores()
+        
 
     def get_scores(self):# load all of the high score data
         self.scores = helper_functions.load_data("high_scores.json")["scores"]
+        # first reset the score sprite
+        self.score_sprite.image.fill(self.score_sprite.colour)
+        for i, item in enumerate(self.scores):
+            temp_text = self.score_sprite.font.render((f"{i + 1}. Score : {item['score']} Time : {item['time']}"), True, (255, 255, 255))
+            self.score_sprite.image.blit(temp_text, (WIDTH * 0.1, HEIGHT * 0.05 + self.score_seperation * i))
+
 
 class Main_Menu_Screen(Base_Screen):
     def __init__(self):
@@ -298,14 +310,19 @@ class Play_Again_Screen(Base_Screen):
         self.time = 0
         self.buttons.add(Main_Menu_Button(WIDTH * 0.2, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Main Menu"))
         self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.3, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play Again"))
-        self.score_box = Text_Box(WIDTH * 0.15, HEIGHT * 0.2, WIDTH * 0.7, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Game Over Your Score Was : {self.score}", int(HEIGHT * 0.1))
+        self.images.add(Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Game Over", int(HEIGHT * 0.1)))
+        self.score_box = Text_Box(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Score : {self.score}", int(HEIGHT * 0.1))
         self.images.add(self.score_box)
+        self.time_box = Text_Box(WIDTH * 0.6, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Time : {self.time}", int(HEIGHT * 0.1))
+        self.images.add(self.time_box)
+
 
 
     def update_score(self, score, time):
         self.score = score
         self.time = time
-        self.score_box.update_text(f"Game Over Your Score Was {self.score} in {self.time} seconds")
+        self.score_box.update_text(f"Score : {self.score}")
+        self.time_box.update_text(f"Time : {self.time}")
         
 
 if __name__ == "__main__":
@@ -314,6 +331,6 @@ if __name__ == "__main__":
     game_screen = Pac_man_side.Pacman_chess_game()
     play_again_screen = Play_Again_Screen()
     current_screen = main_menu
-    #while True:
-    #    current_screen.play_step()
-    current_screen.buttons.sprites()[1].click()
+    while True:
+        current_screen.play_step()
+    #current_screen.buttons.sprites()[1].click()
