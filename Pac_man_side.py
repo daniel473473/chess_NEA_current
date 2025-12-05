@@ -338,6 +338,11 @@ class Pacman_chess_game():
     # reset the points
     self.points = 0
 
+    # reset the time of the game
+    self.time = 0
+    self.game_timer = pygame.USEREVENT + 3
+    pygame.time.set_timer(self.game_timer, 1000)
+
     # reset energized
     self.energized = False
     self.energized_timer = pygame.USEREVENT + 1
@@ -526,17 +531,19 @@ class Pacman_chess_game():
           self.player.up = False
           self.player.left = False
           self.player.right = True
-      elif event.type == self.energized_timer:
+      elif event.type == self.energized_timer:# if energizer time is up
           self.energized = False
           self.dead_ghosts_this_round = 0
           pygame.time.set_timer(self.energized_timer, 0)
-      elif event.type == self.dead_ghost_timer:
+      elif event.type == self.dead_ghost_timer:# if a ghost should respawn
           ghost = Ghost(WIDTH // 2 - self.cell_size // 4, HEIGHT // 2 - self.cell_size // 4,Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
           self.all_sprites_list.add(ghost)
           self.ghosts.add(ghost)
           self.dead_ghosts -= 1
           if self.dead_ghosts <= 0:
             pygame.time.set_timer(self.dead_ghost_timer, 0)
+      elif event.type == self.game_timer:# increase the time of the game
+          self.time += 1
     
     # check if another piece should move
     if not Chess_Piece.pieces_moving and self.start_delay < 0:
@@ -589,7 +596,7 @@ class Pacman_chess_game():
     #print(time.time() - start_time)
     while not self.game_over:
           self.play_step()
-    return self.points
+    return self.points, self.time
 
 if __name__ == "__main__":
     game = Pacman_chess_game()
