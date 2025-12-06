@@ -83,6 +83,8 @@ class Game_Button(Button):
         score, time = current_screen.play(main_menu.depth)
         data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time})
+        # sort the scores from highest to lowest
+        data["scores"].sort(key=lambda x: x["score"], reverse=True)
         helper_functions.store_data(helper_functions.resource_path("high_scores.json"), data)
         current_screen = play_again_screen
         play_again_screen.update_score(score, time)
