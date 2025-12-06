@@ -28,7 +28,7 @@ pygame.display.set_caption("Chess-man")
 
 # pacman class
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, color, height, width, min_height, min_width, board_size, speed = 0.005):
+    def __init__(self, x, y, color, height, width, min_height, min_width, board_size, speed = 0.008):
         # set the players x and y
         self.x = x
         self.y = y
@@ -43,7 +43,7 @@ class Player(pygame.sprite.Sprite):
         # start with no movement
         self.stop()
         # speed varibles
-        self.speed = speed * (self.MAXHEIGHT + self.MAXWIDTH)/2
+        self.speed = speed * board_size
         self.width = width
         self.height = height
         super().__init__()
@@ -215,10 +215,13 @@ class Chess_Piece(pygame.sprite.Sprite):
 
 # ghost class
 class Ghost(pygame.sprite.Sprite):
-    def __init__(self,x, y, color, height, width, min_height, min_width, board_size, speed = 0.002):
+    def __init__(self,x, y, color, height, width, min_height, min_width, board_size, time_to_move = 60, speed = 0.005):
         # set up the inital position of the ghost
         self.x = x
         self.y = y
+        self.home_x = x
+        self.home_y = y
+        self.active = False
         
         # set the limits of where the ghost can move to
         self.MAXHEIGHT = min_height + board_size
@@ -226,9 +229,11 @@ class Ghost(pygame.sprite.Sprite):
         self.MINHEIGHT = min_height
         self.MINWIDTH = min_width
         # start with no movement
-        self.stop()
+        self.moving = False
+        self.fleeing = False
         # speed varibles
-        self.speed = speed * (self.MAXHEIGHT + self.MAXWIDTH)/2
+        self.speed = speed * board_size
+        self.time_to_move = time_to_move
         self.width = width
         self.height = height
         super().__init__()
@@ -239,61 +244,45 @@ class Ghost(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
-    
-        
-    def stop(self):
-        self.down = False
-        self.up = False
-        self.left = False
-        self.right = False
-
-
-    def update(self):
-      # update position of the ghost
-      if self.down:
-        self.y+=self.speed
-        self.rect.y = self.y
-      elif self.up:
-        self.y-=self.speed
-        self.rect.y = self.y
-      elif self.left:
-        self.x-=self.speed
-        self.rect.x = self.x
-      elif self.right:
-        self.x+=self.speed
-        self.rect.x = self.x
-      # limiting the movement of the ghost
-      if self.y < self.MINHEIGHT:# upper limit
-        self.y = self.MINHEIGHT
-        self.rect.y = self.MINHEIGHT
-        self.up = False
-      if self.x < self.MINWIDTH:# left most limit
-        self.x = self.MINWIDTH
-        self.rect.x = self.MINWIDTH
-        self.left = False
-      if self.y > self.MAXHEIGHT:# down most limit
-        self.y = self.MAXHEIGHT
-        self.rect.y = self.MAXHEIGHT
-        self.down = False
-      if self.x > self.MAXWIDTH:# right most limit
-        self.x = self.MAXWIDTH
-        self.rect.x = self.MAXWIDTH
-        self.right = False
-
+          
 
     def change_direction(self, player_x, player_y, energized):
-      difference_x = self.x - player_x
-      difference_y = self.y - player_y
-      if energized:
-         difference_x, difference_y = difference_x * -1, difference_y * -1
-      if abs(difference_x) > abs(difference_y):
-        self.stop()
-        if difference_x > 0: self.left = True
-        else: self.right = True
-      else:
-        self.stop()
-        if difference_y > 0: self.up = True
-        else: self.down = True
+      if self.active == True:
+        if energized:
+          if not self.fleeing:
+            self.move_to(self.MAXWIDTH if self.x - player_x > 0 else self.MINWIDTH, self.MAXHEIGHT if self.y - player_y < 0 else self.MINHEIGHT, time = 120)
+            self.fleeing = True
+        elif self.moving == False:
+          self.move_to(player_x, player_y)
+          self.fleeing = False
+
+
+    def move_to(self, x, y, time = None):
+          self.x_speed = (x - self.rect.x)/(self.time_to_move if time is None else time)
+          self.y_speed = (y - self.rect.y)/(self.time_to_move if time is None else time)
+          self.target_x = x
+          self.target_y = y
+          self.moving = True
+    
+    
+    def update(self):
+      if self.moving:
+          if (self.target_x - self.x) * self.x_speed <= 0 and (self.target_y - self.y) * self.y_speed <= 0:
+              self.rect.x = self.target_x
+              self.rect.y = self.target_y
+              self.x = self.target_x
+              self.y = self.target_y
+              self.x_speed = 0
+              self.y_speed = 0
+              self.moving = False
+          else:
+              self.x += self.x_speed
+              self.y += self.y_speed
+              self.rect.x = self.x
+              self.rect.y = self.y
+
+    def go_home(self):
+          self.move_to(self.home_x, self.home_y)
 
 # game board class
 class Board:
@@ -347,12 +336,6 @@ class Pacman_chess_game():
     self.energized = False
     self.energized_timer = pygame.USEREVENT + 1
     pygame.time.set_timer(self.energized_timer, 0) 
-
-    # reset dead ghosts
-    self.dead_ghosts = 0
-    self.dead_ghosts_this_round = 0
-    self.dead_ghost_timer = pygame.USEREVENT + 2
-    pygame.time.set_timer(self.dead_ghost_timer, 0) 
     
 
     # reset the board
@@ -361,6 +344,30 @@ class Pacman_chess_game():
     board_y = HEIGHT // 2 - (self.cell_size * 4)
     self.board = Board(board_x, board_y, 8, self.cell_size) # temp board in synced with actual board
     self.start_delay = 50
+
+    # reset dead ghosts
+    self.dead_ghosts = 0
+    self.dead_ghosts_this_round = 0
+    self.dead_ghost_timer = pygame.USEREVENT + 2
+    pygame.time.set_timer(self.dead_ghost_timer, 0) 
+    # set up the ghosts 
+    # top left ghost
+    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    self.all_sprites_list.add(ghost)
+    self.ghosts.add(ghost)
+    # top right ghost
+    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    self.all_sprites_list.add(ghost)
+    self.ghosts.add(ghost)
+    # bottom left ghost
+    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    self.all_sprites_list.add(ghost)
+    self.ghosts.add(ghost)
+    # bottom right ghost
+    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    self.all_sprites_list.add(ghost)
+    self.ghosts.add(ghost)
+    
     
     # reset game over
     self.game_over = False
@@ -485,17 +492,18 @@ class Pacman_chess_game():
     collided_pieces = pygame.sprite.spritecollide(self.player, self.ghosts, False)
     if collided_pieces:
         for piece in collided_pieces:
-          if self.energized:# code for eating the ghosts
-            self.dead_ghosts += 1
-            self.dead_ghosts_this_round += 1
-            pygame.time.set_timer(self.dead_ghost_timer, 2000)
-            # remove the eaten ghost
-            self.ghosts.remove(piece)
-            self.all_sprites_list.remove(piece)
-            self.points += 2 ** (self.dead_ghosts_this_round - 1) * 50
-            self.text = self.font.render(str(self.points), True, Pac_man_colours.WHITE)  # White color
-          else:
-            self.game_over = True
+          if piece.active == True:
+            if self.energized:# code for eating the ghosts
+              self.dead_ghosts += 1 
+              self.dead_ghosts_this_round += 1
+              pygame.time.set_timer(self.dead_ghost_timer, 4000)
+              # remove the eaten ghost
+              piece.active = False
+              piece.go_home()
+              self.points += 2 ** (self.dead_ghosts_this_round - 1) * 50
+              self.text = self.font.render(str(self.points), True, Pac_man_colours.WHITE)  # White color
+            else:
+              self.game_over = True
 
 
   def run_next_move(self, move):
@@ -536,9 +544,11 @@ class Pacman_chess_game():
           self.dead_ghosts_this_round = 0
           pygame.time.set_timer(self.energized_timer, 0)
       elif event.type == self.dead_ghost_timer:# if a ghost should respawn
-          ghost = Ghost(WIDTH // 2 - self.cell_size // 4, HEIGHT // 2 - self.cell_size // 4,Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
-          self.all_sprites_list.add(ghost)
-          self.ghosts.add(ghost)
+          for i in self.ghosts:
+            if not i.active:
+                i.active = True
+                i.waiting = False
+                break
           self.dead_ghosts -= 1
           if self.dead_ghosts <= 0:
             pygame.time.set_timer(self.dead_ghost_timer, 0)
@@ -557,9 +567,10 @@ class Pacman_chess_game():
 
            # spawn a new ghost if there are too few for the number of pieces
            if len(self.pieces) % 7 == 0:# spawn a ghost for every 7 pieces that are taken for a total of 4 ghosts at once
-              ghost = Ghost(WIDTH // 2 - self.cell_size // 4, HEIGHT // 2 - self.cell_size // 4,Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
-              self.all_sprites_list.add(ghost)
-              self.ghosts.add(ghost)
+              for i in self.ghosts:
+                  if not i.active:
+                     i.active = True
+                     break
            self.piece_to_remove = False    
        if len(self.moves) > 0:
           self.run_next_move(self.moves.pop(0))

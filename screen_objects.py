@@ -82,9 +82,9 @@ class Game_Button(Button):
         current_screen = game_screen
         current_screen.reset()
         score, time = current_screen.play(main_menu.depth)
-        data = helper_functions.load_data("high_scores.json")
+        data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time})
-        helper_functions.store_data("high_scores.json", data)
+        helper_functions.store_data(helper_functions.resource_path("high_scores.json"), data)
         current_screen = play_again_screen
         play_again_screen.update_score(score, time)
 
@@ -279,7 +279,11 @@ class High_Score_Screen(Base_Screen):
         
 
     def get_scores(self):# load all of the high score data
-        self.scores = helper_functions.load_data("high_scores.json")["scores"]
+        file_data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
+        if "scores" not in file_data:
+            file_data["scores"] = []
+            helper_functions.store_data(helper_functions.resource_path("high_scores.json"), file_data)
+        self.scores = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))["scores"]
         # first reset the score sprite
         self.score_sprite.image.fill(self.score_sprite.colour)
         for i, item in enumerate(self.scores):

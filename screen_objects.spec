@@ -5,7 +5,7 @@ a = Analysis(
     ['screen_objects.py'],
     pathex=[],
     binaries=[],
-    datas=[('pngs', 'pngs')],
+    datas=[('pngs', 'pngs'), ('high_scores.json', 'high_scores.json')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
