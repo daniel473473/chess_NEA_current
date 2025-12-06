@@ -80,7 +80,6 @@ class Game_Button(Button):
         global current_screen
         global game_screen
         current_screen = game_screen
-        current_screen.reset()
         score, time = current_screen.play(main_menu.depth)
         data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time})

@@ -316,6 +316,9 @@ class Pacman_chess_game():
 
 
   def reset(self):
+    # reset pygame events
+    pygame.event.clear()
+
     # reset the lists of sprites
     self.all_sprites_list = pygame.sprite.Group()
     self.fruits = pygame.sprite.Group()
@@ -602,9 +605,10 @@ class Pacman_chess_game():
 
 
   def play(self, depth):
-    #start_time = time.time()
     self.moves, self.boards, self.move_codes = chess_main.play_game(depth)
-    #print(time.time() - start_time)
+
+    self.reset()
+
     while not self.game_over:
           self.play_step()
     return self.points, self.time
