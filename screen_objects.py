@@ -71,6 +71,7 @@ class High_Score_Button(Button):
     def click(self):
         global current_screen
         current_screen = high_score_screen
+        current_screen.get_scores()
 
 class Game_Button(Button):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
