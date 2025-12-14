@@ -7,6 +7,7 @@ import time
 from CHESS import chess
 import helper_functions
 import sys
+import actual_screen_objects
 
 # TODO
 # make captures from enpassant work properly
@@ -312,7 +313,7 @@ class Pacman_chess_game():
     # set up the font
     self.font = pygame.font.Font(None, 36)
     # setup for everything that will be reset later
-    self.reset()
+    #self.reset()
 
 
   def reset(self):
@@ -326,6 +327,12 @@ class Pacman_chess_game():
     self.pieces = pygame.sprite.Group()
     self.players = pygame.sprite.Group()
     self.ghosts = pygame.sprite.Group()
+    self.images = pygame.sprite.Group()
+
+    # reset the move warning
+    self.move_warning = actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.01, WIDTH * 0.4, HEIGHT * 0.08, Pac_man_colours.WHITE, f"Next Move : {self.move_codes[0]}", HEIGHT * 0.07)
+    self.images.add(self.move_warning)
+    self.all_sprites_list.add(self.move_warning)
 
     # reset the points
     self.points = 0
@@ -576,6 +583,7 @@ class Pacman_chess_game():
                      break
            self.piece_to_remove = False    
        if len(self.moves) > 0:
+          self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
           self.run_next_move(self.moves.pop(0))
           self.boards.pop(0)
        else:
@@ -593,6 +601,7 @@ class Pacman_chess_game():
     self.board.render(screen)
     screen.blit(self.text, self.text_rect)
     #self.all_sprites_list.draw(screen)
+    self.images.draw(screen)
     self.fruits.draw(screen)
     self.energizers.draw(screen)
     self.pieces.draw(screen)

@@ -3,6 +3,7 @@ import Pac_man_colours
 import Pac_man_side
 import helper_functions
 import sys
+import actual_screen_objects
 
 
 # things to set up for the whole game
@@ -163,7 +164,7 @@ class Slider(Button):
 
         return [round((self.x_pos - self.x_base)/self.option_range) + 1, self.ID]
 
-
+'''
 class Text_Box((pygame.sprite.Sprite)):
     def __init__(self, x, y, x_size, y_size, colour, text, text_size = None):
         super().__init__()
@@ -195,7 +196,7 @@ class Text_Box((pygame.sprite.Sprite)):
         self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
         self.image_center = self.image.get_rect().center
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
-
+'''
 
 
 
@@ -275,7 +276,7 @@ class High_Score_Screen(Base_Screen):
         self.scroll = 0
         self.score_seperation = HEIGHT * 0.1
         self.buttons.add(Main_Menu_Button(WIDTH * 0.85, HEIGHT * 0.2, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Main Menu"))
-        self.score_sprite = Text_Box(WIDTH * 0.2, HEIGHT * 0.2, WIDTH * 0.6, HEIGHT * 0.7, Pac_man_colours.GRAY, "", text_size= int(HEIGHT * 0.1))
+        self.score_sprite = actual_screen_objects.Text_Box(WIDTH * 0.2, HEIGHT * 0.2, WIDTH * 0.6, HEIGHT * 0.7, Pac_man_colours.GRAY, "", text_size= int(HEIGHT * 0.1))
         self.images.add(self.score_sprite)
         self.get_scores()
         
@@ -302,7 +303,7 @@ class Main_Menu_Screen(Base_Screen):
         self.buttons.add(High_Score_Button(WIDTH * 0.2, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "High Scores"))
         self.sliders.add(Slider(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.5, HEIGHT * 0.1, WIDTH * 0.3, HEIGHT * 0.2, Pac_man_colours.BLUE, Pac_man_colours.LIGHT_GREEN, 3, "Skill", ID="Depth"))
         self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play"))
-        self.images.add(Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, "Welcome to Chess-Man", int(HEIGHT * 0.1)))
+        self.images.add(actual_screen_objects.Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, "Welcome to Chess-Man", int(HEIGHT * 0.1)))
 
     def check_data(self):
         for item in self.data:
@@ -316,10 +317,10 @@ class Play_Again_Screen(Base_Screen):
         self.time = 0
         self.buttons.add(Main_Menu_Button(WIDTH * 0.2, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Main Menu"))
         self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.3, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play Again"))
-        self.images.add(Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Game Over", int(HEIGHT * 0.1)))
-        self.score_box = Text_Box(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Score : {self.score}", int(HEIGHT * 0.1))
+        self.images.add(actual_screen_objects.Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Game Over", int(HEIGHT * 0.1)))
+        self.score_box = actual_screen_objects.Text_Box(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Score : {self.score}", int(HEIGHT * 0.1))
         self.images.add(self.score_box)
-        self.time_box = Text_Box(WIDTH * 0.6, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Time : {self.time}", int(HEIGHT * 0.1))
+        self.time_box = actual_screen_objects.Text_Box(WIDTH * 0.6, HEIGHT * 0.5, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Time : {self.time}", int(HEIGHT * 0.1))
         self.images.add(self.time_box)
 
 
