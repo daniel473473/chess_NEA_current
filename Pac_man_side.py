@@ -179,13 +179,24 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.target_x = x
         self.target_y = y
         self.moving = True
-        self.image.fill(self.moving_colour)
-        if not self.sprite_path is None:
-          self.image.blit(self.picture, self.image.get_rect())
-        else:
-           self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+        self.set_image_moving()
         Chess_Piece.pieces_moving.append(True)
   
+
+  def set_image_moving(self):
+    self.image.fill(self.moving_colour)
+    if not self.sprite_path is None:
+        self.image.blit(self.picture, self.image.get_rect())
+    else:
+        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+
+  def set_image_stopped(self):
+    self.image.fill(self.colour)
+    if not self.sprite_path is None:
+        self.image.blit(self.picture, self.image.get_rect())
+    else:
+        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+
   
   def update(self):
     if self.moving:
@@ -197,11 +208,7 @@ class Chess_Piece(pygame.sprite.Sprite):
             self.x_speed = 0
             self.y_speed = 0
             self.moving = False
-            self.image.fill(self.colour)
-            if not self.sprite_path is None:
-              self.image.blit(self.picture, self.image.get_rect())
-            else:
-               self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+            self.set_image_stopped()
             Chess_Piece.pieces_moving.pop()
             #self.move_to(random.random() * (WIDTH - self.size), random.random() * (HEIGHT - self.size))
         else:
@@ -523,6 +530,19 @@ class Pacman_chess_game():
      else:
         self.move_piece(move[1], move[0])
 
+
+  def check_next_move(self, move):
+     if type(move[0][0]) == list:
+        for sub_move in move:
+          self.check_next_move(sub_move)
+     else:
+        self.check_move(move[1], move[0])
+
+  def check_move(self, start_coor, end_coor):
+      piece = self.board.board[start_coor[0]][start_coor[1]]
+      piece.set_image_moving()
+
+
   def play_step(self):
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -586,6 +606,7 @@ class Pacman_chess_game():
           self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
           self.run_next_move(self.moves.pop(0))
           self.boards.pop(0)
+          self.check_next_move(self.moves[0])
        else:
           print("Final Score:", self.points)
           self.game_over = True
