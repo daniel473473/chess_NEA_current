@@ -11,8 +11,10 @@ import actual_screen_objects
 
 # TODO
 # make captures from enpassant work properly
+# make promotion work properly
 # make ghosts spawn from the edges
 # give ghosts an image
+# PAWN TOOK BACKWARDS???
 
 # things to set up for the whole game
 pygame.init()
@@ -131,7 +133,7 @@ class Energizer(pygame.sprite.Sprite):
 class Chess_Piece(pygame.sprite.Sprite):
   pieces_moving = []
 
-  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, time_to_move = 60, name = "", sprite_path = None):
+  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, time_to_move = 60, flash_time = 100, name = "", sprite_path = None):
         # what is the current movement
         self.x_speed = 0
         self.y_speed = 0
@@ -145,6 +147,10 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.size = size
         self.colour = colour
         self.moving_colour = moving_colour
+        self.image_state = "stopped"
+        self.flashing = False
+        self.flash_time = flash_time
+        self.start_flash_time = 0
         self.actual_x = x
         self.actual_y = y
         self.board_x = board_x
@@ -179,11 +185,13 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.target_x = x
         self.target_y = y
         self.moving = True
+        self.flashing = False
         self.set_image_moving()
         Chess_Piece.pieces_moving.append(True)
   
 
   def set_image_moving(self):
+    self.image_state = "moving"
     self.image.fill(self.moving_colour)
     if not self.sprite_path is None:
         self.image.blit(self.picture, self.image.get_rect())
@@ -191,11 +199,19 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
   def set_image_stopped(self):
+    self.image_state = "stopped"
     self.image.fill(self.colour)
     if not self.sprite_path is None:
         self.image.blit(self.picture, self.image.get_rect())
     else:
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+
+
+  def set_image_flashing(self, flash_time = None):
+    self.flashing = True
+    if not flash_time is None: self.flash_time = flash_time
+    self.start_flash_time = pygame.time.get_ticks()
+
 
   
   def update(self):
@@ -216,6 +232,11 @@ class Chess_Piece(pygame.sprite.Sprite):
             self.actual_y += self.y_speed
             self.rect.x = self.actual_x
             self.rect.y = self.actual_y
+    elif self.flashing:
+        if ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 0 and self.image_state == "stopped":
+            self.set_image_moving()
+        elif ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 1 and self.image_state == "moving":
+            self.set_image_stopped()
 
   def __str__(self):
      return self.name
@@ -337,7 +358,7 @@ class Pacman_chess_game():
     self.images = pygame.sprite.Group()
 
     # reset the move warning
-    self.move_warning = actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.01, WIDTH * 0.4, HEIGHT * 0.08, Pac_man_colours.WHITE, f"Next Move : {self.move_codes[0]}", HEIGHT * 0.07)
+    self.move_warning = actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.01, WIDTH * 0.4, HEIGHT * 0.08, Pac_man_colours.BLACK, f"Next Move : {self.move_codes[0]}", HEIGHT * 0.07)
     self.images.add(self.move_warning)
     self.all_sprites_list.add(self.move_warning)
 
@@ -416,14 +437,14 @@ class Pacman_chess_game():
                         "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png"]
     # black pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.LIGHT_RED, name = blacknames[i], sprite_path= black_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.HAPPY_RED, name = blacknames[i], sprite_path= black_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[i//8][i%8] = piece
 
     # white pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.LIGHT_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.HAPPY_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[7 - (i//8)][7 - (i%8)] = piece
@@ -540,7 +561,7 @@ class Pacman_chess_game():
 
   def check_move(self, start_coor, end_coor):
       piece = self.board.board[start_coor[0]][start_coor[1]]
-      piece.set_image_moving()
+      piece.set_image_flashing()
 
 
   def play_step(self):
