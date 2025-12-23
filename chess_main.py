@@ -124,7 +124,7 @@ def is_terminal_node(game, moves, turn):
     if  game.mandatory_move_delay >= 50 or (len(game.White_pieces) == 1 and len(game.Black_pieces) == 1):
         return True
     for mv in moves:
-        if not mv in ["0-0", "0-0-0"]:
+        if not mv[0] == "0":
             piece = game.board[mv[2][0]][mv[2][1]]
             opposing_piece = game.board[mv[1][0]][mv[1][1]]
             taking = opposing_piece.symbol != constants.EMPTY_CELL or (piece.player != opposing_piece.player and opposing_piece.code == constants.SHADOW_PAWN_CODE and piece.code == constants.PAWN_CODE)
@@ -163,7 +163,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
         move = False
         for mv in valid_locations:
             new_score = -math.inf
-            if not mv in ["0-0", "0-0-0"]:
+            if not mv[0] == "0":
                 piece = game.board[mv[2][0]][mv[2][1]]
                 opposing_piece = game.board[mv[1][0]][mv[1][1]]
                 taking = opposing_piece.symbol != constants.EMPTY_CELL or (piece.player != opposing_piece.player and opposing_piece.code == constants.SHADOW_PAWN_CODE and piece.code == constants.PAWN_CODE)
@@ -188,9 +188,15 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         move = mv
                 game.undoMove(game.board[mv[1][0]][mv[1][1]])
             else:
+                mv = game.decode_checks(mv)
                 game.decode_castle(mv, save_history=True)
                 new_score = minimax(game, turn + 1, depth-1, alpha, beta, False)[1]
-                if mv == "0-0":
+                if game.inCheck(turn + 1, game.board):
+                    if len(game.listLegalMoves(Check=True)) == 0:# check if the check is mate
+                        mv += "#"
+                    else:
+                        mv += "+"
+                if game.decode_checks(mv) == "0-0":
                     game.undoShortCastle()
                 else:
                     game.undoLongCastle()
@@ -216,7 +222,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
         move = False
         for mv in valid_locations:
             new_score = math.inf
-            if not mv in ["0-0", "0-0-0"]:
+            if not mv[0] == "0":
                 piece = game.board[mv[2][0]][mv[2][1]]
                 opposing_piece = game.board[mv[1][0]][mv[1][1]]
                 taking = opposing_piece.symbol != constants.EMPTY_CELL or (opposing_piece.player != piece.player and opposing_piece.code == constants.SHADOW_PAWN_CODE and piece.code == constants.PAWN_CODE)
@@ -241,9 +247,15 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         move = mv
                 game.undoMove(game.board[mv[1][0]][mv[1][1]])
             else:
+                mv = game.decode_checks(mv)
                 game.decode_castle(mv, save_history=True)
                 new_score = minimax(game, turn + 1, depth-1, alpha, beta, True)[1]
-                if mv == "0-0":
+                if game.inCheck(turn + 1, game.board):
+                    if len(game.listLegalMoves(Check=True)) == 0:# check if the check is mate
+                        mv += "#"
+                    else:
+                        mv += "+"
+                if game.decode_checks(mv) == "0-0":
                     game.undoShortCastle()
                 else:
                     game.undoLongCastle()
@@ -295,9 +307,9 @@ def play_game(depth, show = False):
         if show:
             board.display(board.board)
         legal = False
-        board.conversion_moves = [[i, board.encode(i)] if i not in ["0-0", "0-0-0"] else [i, i] for i in board.listLegalMoves()]
-        board.legal_moves = [i[1] if i not in ["0-0", "0-0-0"] else i for i in board.conversion_moves]
-        board.conversion_moves = filter(lambda x: x[0] != ["0-0", "0-0-0"], board.conversion_moves)
+        board.conversion_moves = [[i, board.encode(i)] if not i[0] == "0" else [i, i] for i in board.listLegalMoves()]
+        board.legal_moves = [i[1] if not i[0] == "0" else i for i in board.conversion_moves]
+        board.conversion_moves = filter(lambda x: not x[0][0] == "0", board.conversion_moves)
         if show:
             print(board.legal_moves)
         while legal == False:
@@ -311,7 +323,7 @@ def play_game(depth, show = False):
                     input()
                 if show:
                     print(time.time()- tick)
-                if not encoded_code in ["0-0", "0-0-0"]: 
+                if not encoded_code[0] == "0": 
                     for move, move_code in board.conversion_moves:
                         if move[0] == encoded_code[0] and move[1] == encoded_code[1] and move[2] == encoded_code[2] and move[7] == encoded_code[7]:
                             code = move_code
@@ -329,7 +341,9 @@ def play_game(depth, show = False):
                     print(code, minimax_score)
                     print(board.mandatory_move_delay)
             else:
-                board.legal_moves = [board.encode(i) if i not in ["0-0", "0-0-0"] else i for i in board.listLegalMoves()]
+                print("illegal move attempted:", code)
+                print("legal moves are:", board.legal_moves)
+                board.legal_moves = [board.encode(i) if not i[0] == "0" else i for i in board.listLegalMoves()]
                 print(board.legal_moves, "\n",board.White_pieces, "\n", board.Black_pieces, "\n", board.shadow_pawns, "\n", board.turn)
                 print(code, minimax_score)
                 raise Exception("illegal move")
@@ -341,9 +355,10 @@ def play_game(depth, show = False):
         # add the used moves the list of moves
         move_codes.append(code)
 
-        if encoded_code not in ["0-0", "0-0-0"]:
+        if encoded_code[0] != "0":
             moves_used.append(encoded_code[1:3])
         else:
+            encoded_code = board.decode_checks(encoded_code)
             if board.turn % 2 == 0:# if it is whites turn
                 moves_used.append([[[7, 6], [7, 4]], [[7,5], [7,7]]] if encoded_code == "0-0" else [[[7, 2], [7, 4]], [[7, 3], [7, 0]]])
             else:
@@ -381,4 +396,4 @@ def play_game(depth, show = False):
 
 if __name__ == "__main__":
     while True:
-        play_game(3, show=True)
+        play_game(1, show=True)

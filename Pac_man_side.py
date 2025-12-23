@@ -133,7 +133,7 @@ class Energizer(pygame.sprite.Sprite):
 class Chess_Piece(pygame.sprite.Sprite):
   pieces_moving = []
 
-  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, time_to_move = 60, flash_time = 100, name = "", sprite_path = None):
+  def __init__(self, x, y, board_x, board_y, size, colour, moving_colour, flashing_colour, time_to_move = 60, flash_time = 150, name = "", sprite_path = None):
         # what is the current movement
         self.x_speed = 0
         self.y_speed = 0
@@ -147,10 +147,12 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.size = size
         self.colour = colour
         self.moving_colour = moving_colour
+        self.flashing_colour = flashing_colour
         self.image_state = "stopped"
         self.flashing = False
         self.flash_time = flash_time
         self.start_flash_time = 0
+        self.flashed = False
         self.actual_x = x
         self.actual_y = y
         self.board_x = board_x
@@ -209,8 +211,24 @@ class Chess_Piece(pygame.sprite.Sprite):
 
   def set_image_flashing(self, flash_time = None):
     self.flashing = True
+    self.flashed = False
     if not flash_time is None: self.flash_time = flash_time
     self.start_flash_time = pygame.time.get_ticks()
+
+  def flash_off(self):
+    self.flashed = False
+    if self.image_state == "moving":
+        self.set_image_moving()
+    elif self.image_state == "stopped":
+        self.set_image_stopped()
+  
+  def flash_on(self):
+    self.flashed = True
+    self.image.fill(self.flashing_colour)
+    if not self.sprite_path is None:
+        self.image.blit(self.picture, self.image.get_rect())
+    else:
+        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
 
   
@@ -233,10 +251,10 @@ class Chess_Piece(pygame.sprite.Sprite):
             self.rect.x = self.actual_x
             self.rect.y = self.actual_y
     elif self.flashing:
-        if ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 0 and self.image_state == "stopped":
-            self.set_image_moving()
-        elif ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 1 and self.image_state == "moving":
-            self.set_image_stopped()
+        if ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 0 and self.flashed == False:
+            self.flash_on()
+        elif ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 1 and self.flashed == True:
+            self.flash_off()
 
   def __str__(self):
      return self.name
@@ -437,14 +455,14 @@ class Pacman_chess_game():
                         "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png"]
     # black pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.HAPPY_RED, name = blacknames[i], sprite_path= black_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.RED,  Pac_man_colours.DARK_RED, name = blacknames[i], sprite_path= black_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[i//8][i%8] = piece
 
     # white pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.HAPPY_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.GREEN, Pac_man_colours.DARK_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[7 - (i//8)][7 - (i%8)] = piece
@@ -623,10 +641,11 @@ class Pacman_chess_game():
                      i.active = True
                      break
            self.piece_to_remove = False    
-       if len(self.moves) > 0:
+       if len(self.moves) > 1:
           self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
           self.run_next_move(self.moves.pop(0))
           self.boards.pop(0)
+          print(self.moves)
           self.check_next_move(self.moves[0])
        else:
           print("Final Score:", self.points)
@@ -665,12 +684,13 @@ class Pacman_chess_game():
     return self.points, self.time
 
 if __name__ == "__main__":
-    game = Pacman_chess_game()
-    start_time = time.time()
-    moves, boards, move_codes = chess_main.play_game(1)
-    #moves = [[[4, 4], [6, 4]], [[3, 4], [1, 4]], [[5, 5], [7, 6]], [[2, 5], [0, 3]], [[3, 1], [7, 5]], [[3, 2], [0, 5]], [[[7, 6], [7, 4]], [[7, 5], [7, 7]]], [[2, 2], [1, 2]], [[5, 3], [3, 1]], [[3, 3], [1, 3]], [[3, 3], [4, 4]], [[4, 6], [0, 2]], [[2, 2], [3, 3]], [[2, 2], [1, 1]], [[5, 2], [7, 1]], [[2, 7], [1, 7]], [[4, 4], [5, 2]], [[6, 5], [3, 2]], [[6, 5], [7, 5]], [[2, 6], [2, 5]], [[3, 4], [5, 5]], [[7, 3], [4, 6]], [[2, 6], [3, 4]], [[2, 6], [1, 5]], [[4, 2], [5, 3]], [[6, 2], [7, 3]], [[5, 3], [6, 3]], [[2, 5], [0, 6]], [[6, 2], [6, 5]], [[1, 3], [0, 1]], [[4, 5], [7, 2]], [[2, 1], [1, 3]], [[2, 4], [4, 2]], [[0, 5], [0, 7]], [[2, 3], [4, 5]], [[0, 7], [0, 5]], [[3, 2], [4, 4]], [[1, 3], [0, 1]], [[1, 3], [2, 4]], [[1, 3], [0, 1]], [[7, 4], [7, 0]], [[0, 3], [0, 4]], [[1, 3], [3, 2]], [[1, 3], [0, 3]], [[4, 5], [2, 3]], [[0, 4], [0, 7]], [[5, 4], [4, 5]], [[0, 3], [0, 0]], [[4, 3], [5, 3]], [[0, 4], [0, 3]], [[5, 2], [6, 2]], [[0, 3], [0, 0]], [[5, 7], [6, 7]], [[0, 4], [0, 3]], [[7, 2], [5, 2]], [[4, 4], [0, 4]], [[7, 5], [7, 2]], [[0, 4], [0, 0]], [[7, 7], [7, 6]], [[3, 2], [2, 2]], [[3, 2], [4, 3]], [[2, 2], [1, 3]], [[7, 3], [7, 5]], [[3, 7], [2, 7]], [[4, 3], [7, 3]], [[0, 2], [0, 0]], [[4, 6], [6, 6]], [[0, 4], [0, 2]], [[3, 7], [4, 6]], [[3, 7], [2, 6]], [[7, 3], [4, 3]], [[0, 2], [0, 0]], [[5, 0], [6, 0]], [[0, 4], [0, 2]], [[7, 6], [7, 7]], [[0, 2], [0, 0]], [[4, 0], [5, 0]], [[0, 4], [0, 2]], [[3, 0], [4, 0]], [[0, 2], [0, 0]], [[2, 0], [3, 0]], [[0, 4], [0, 2]], [[7, 7], [7, 6]], [[0, 2], [0, 0]], [[5, 1], [6, 1]], [[0, 4], [0, 2]], [[4, 1], [5, 1]], [[4, 7], [3, 7]], [[5, 3], [7, 3]], [[2, 6], [1, 6]], [[4, 3], [5, 3]], [[0, 2], [0, 0]], [[3, 1], [4, 1]], [[3, 1], [2, 2]], [[4, 7], [4, 3]], [[2, 0], [3, 1]], [[4, 1], [4, 7]], [[3, 0], [2, 0]], [[7, 1], [4, 1]], [[4, 0], [3, 0]], [[7, 2], [5, 4]], [[3, 2], [0, 2]], [[5, 0], [5, 2]]]
-    print(time.time() - start_time)
-    #print(moves)
-    game.play(1)
-    print(game.points)
-    pygame.quit()
+    while True:
+      game = Pacman_chess_game()
+      start_time = time.time()
+      moves, boards, move_codes = chess_main.play_game(1)
+      #moves = [[[4, 4], [6, 4]], [[3, 4], [1, 4]], [[5, 5], [7, 6]], [[2, 5], [0, 3]], [[3, 1], [7, 5]], [[3, 2], [0, 5]], [[[7, 6], [7, 4]], [[7, 5], [7, 7]]], [[2, 2], [1, 2]], [[5, 3], [3, 1]], [[3, 3], [1, 3]], [[3, 3], [4, 4]], [[4, 6], [0, 2]], [[2, 2], [3, 3]], [[2, 2], [1, 1]], [[5, 2], [7, 1]], [[2, 7], [1, 7]], [[4, 4], [5, 2]], [[6, 5], [3, 2]], [[6, 5], [7, 5]], [[2, 6], [2, 5]], [[3, 4], [5, 5]], [[7, 3], [4, 6]], [[2, 6], [3, 4]], [[2, 6], [1, 5]], [[4, 2], [5, 3]], [[6, 2], [7, 3]], [[5, 3], [6, 3]], [[2, 5], [0, 6]], [[6, 2], [6, 5]], [[1, 3], [0, 1]], [[4, 5], [7, 2]], [[2, 1], [1, 3]], [[2, 4], [4, 2]], [[0, 5], [0, 7]], [[2, 3], [4, 5]], [[0, 7], [0, 5]], [[3, 2], [4, 4]], [[1, 3], [0, 1]], [[1, 3], [2, 4]], [[1, 3], [0, 1]], [[7, 4], [7, 0]], [[0, 3], [0, 4]], [[1, 3], [3, 2]], [[1, 3], [0, 3]], [[4, 5], [2, 3]], [[0, 4], [0, 7]], [[5, 4], [4, 5]], [[0, 3], [0, 0]], [[4, 3], [5, 3]], [[0, 4], [0, 3]], [[5, 2], [6, 2]], [[0, 3], [0, 0]], [[5, 7], [6, 7]], [[0, 4], [0, 3]], [[7, 2], [5, 2]], [[4, 4], [0, 4]], [[7, 5], [7, 2]], [[0, 4], [0, 0]], [[7, 7], [7, 6]], [[3, 2], [2, 2]], [[3, 2], [4, 3]], [[2, 2], [1, 3]], [[7, 3], [7, 5]], [[3, 7], [2, 7]], [[4, 3], [7, 3]], [[0, 2], [0, 0]], [[4, 6], [6, 6]], [[0, 4], [0, 2]], [[3, 7], [4, 6]], [[3, 7], [2, 6]], [[7, 3], [4, 3]], [[0, 2], [0, 0]], [[5, 0], [6, 0]], [[0, 4], [0, 2]], [[7, 6], [7, 7]], [[0, 2], [0, 0]], [[4, 0], [5, 0]], [[0, 4], [0, 2]], [[3, 0], [4, 0]], [[0, 2], [0, 0]], [[2, 0], [3, 0]], [[0, 4], [0, 2]], [[7, 7], [7, 6]], [[0, 2], [0, 0]], [[5, 1], [6, 1]], [[0, 4], [0, 2]], [[4, 1], [5, 1]], [[4, 7], [3, 7]], [[5, 3], [7, 3]], [[2, 6], [1, 6]], [[4, 3], [5, 3]], [[0, 2], [0, 0]], [[3, 1], [4, 1]], [[3, 1], [2, 2]], [[4, 7], [4, 3]], [[2, 0], [3, 1]], [[4, 1], [4, 7]], [[3, 0], [2, 0]], [[7, 1], [4, 1]], [[4, 0], [3, 0]], [[7, 2], [5, 4]], [[3, 2], [0, 2]], [[5, 0], [5, 2]]]
+      print(time.time() - start_time)
+      #print(moves)
+      game.play(1)
+      print(game.points)
+      pygame.quit()

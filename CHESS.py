@@ -11,7 +11,7 @@ import math
 
 # TODO 50 move rule
 # TODO repetition
-# TODO suffixes for castling and stop casting in check
+# TODO stop casting in check
 
 def underline(text):
     return f"\033[4m{text}\033[0m"# under line the text
@@ -733,11 +733,25 @@ class chess:# the whole game class
             self.shortCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0")
+                if self.inCheck(self.turn + 2, self.board):
+                    if len(self.listLegalMoves(Check=True)) == 0:# check if the check is mate
+                        legal_moves[0] += "#"
+                    else:
+                        legal_moves[0] += "+"
+                #elif len(self.listLegalMoves(Check=True)) == 0:# check for stalemate
+                #    legal_moves[0] += "-"
             self.undoShortCastle()
         if Legal_checker.legalLongCastle(self.board, self.turn):# check if you can long castle
             self.longCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0-0")
+                if self.inCheck(self.turn + 2, self.board):
+                    if len(self.listLegalMoves(Check=True)) == 0:# check if the check is mate
+                        legal_moves[0] += "#"
+                    else:
+                        legal_moves[0] += "+"
+                #elif len(self.listLegalMoves(Check=True)) == 0:# check for stalemate
+                #    legal_moves[0] += "-"
             self.undoLongCastle()
         return legal_moves
 
@@ -797,7 +811,7 @@ class chess:# the whole game class
         while not done:
             self.display(self.board)
             legal = False
-            self.legal_moves = [self.encode(i) if i not in ["0-0", "0-0-0"] else i for i in self.listLegalMoves()]
+            self.legal_moves = [self.encode(i) if not  i[0] == "0" else i for i in self.listLegalMoves()]
             print(self.legal_moves)
             
             while legal == False:
