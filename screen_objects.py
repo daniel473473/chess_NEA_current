@@ -74,6 +74,7 @@ class High_Score_Button(Button):
         current_screen = high_score_screen
         current_screen.get_scores()
 
+
 class Game_Button(Button):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
         super().__init__(x, y, x_size, y_size, base_colour, selected_colour, text, text_size)
@@ -90,6 +91,7 @@ class Game_Button(Button):
         helper_functions.store_data(helper_functions.resource_path("high_scores.json"), data)
         current_screen = play_again_screen
         play_again_screen.update_score(score, time)
+
 
 class Main_Menu_Button(Button):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
@@ -164,40 +166,9 @@ class Slider(Button):
 
         return [round((self.x_pos - self.x_base)/self.option_range) + 1, self.ID]
 
-'''
-class Text_Box((pygame.sprite.Sprite)):
-    def __init__(self, x, y, x_size, y_size, colour, text, text_size = None):
-        super().__init__()
-        self.x_pos = x
-        self.y_pos = y
-        self.x_size = x_size
-        self.y_size = y_size
-        self.colour = colour
-        self.text = text
 
-        self.text_size = int(text_size) if text_size else int(min(x_size, y_size)//2)
-
-        self.image = pygame.Surface([x_size, y_size])
-        self.image.fill(self.colour)
-        pygame.draw.rect(self.image, self.colour,pygame.Rect(x, y, x_size, y_size))
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x_pos
-        self.rect.y = self.y_pos
-        
-        # text
-        self.font = pygame.font.Font(None, self.text_size)
-        self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
-        self.image_center = self.image.get_rect().center
-        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
-
-    def update_text(self, text):
-        self.text = text
-        self.image.fill(self.colour)
-        self.text_sprite = self.font.render((self.text), True, (255, 255, 255))
-        self.image_center = self.image.get_rect().center
-        self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
-'''
-
+class scroll_Bar(pygame.sprite.Sprite):
+    pass
 
 
 class Base_Screen:
@@ -270,6 +241,7 @@ class Base_Screen:
         # keep the speed to 60 fps
         clock.tick(60)
 
+
 class High_Score_Screen(Base_Screen):
     def __init__(self):
         super().__init__()
@@ -309,6 +281,7 @@ class Main_Menu_Screen(Base_Screen):
         for item in self.data:
             if item[-1] == "Depth":
                 self.depth = item[0]
+
 
 class Play_Again_Screen(Base_Screen):
     def __init__(self):

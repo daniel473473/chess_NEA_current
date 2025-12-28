@@ -9,9 +9,7 @@ import math
 
 
 
-# TODO 50 move rule
-# TODO repetition
-# TODO stop casting in check
+# TODO repetition stalemates
 
 def underline(text):
     return f"\033[4m{text}\033[0m"# under line the text
@@ -729,7 +727,7 @@ class chess:# the whole game class
         # sort the moves by score for minimax
         legal_moves.sort(key=lambda x: x[9], reverse=True)
         # add castling moves after so sorting works
-        if Legal_checker.legalShortCastle(self.board, self.turn):# check if you can short castle
+        if Legal_checker.legalShortCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 5, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board, turn=self.turn + 1):# check if you can short castle
             self.shortCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0")
@@ -741,7 +739,7 @@ class chess:# the whole game class
                 #elif len(self.listLegalMoves(Check=True)) == 0:# check for stalemate
                 #    legal_moves[0] += "-"
             self.undoShortCastle()
-        if Legal_checker.legalLongCastle(self.board, self.turn):# check if you can long castle
+        if Legal_checker.legalLongCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 3, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board, turn=self.turn + 1):# check if you can long castle
             self.longCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0-0")
