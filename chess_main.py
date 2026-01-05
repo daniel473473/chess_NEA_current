@@ -11,6 +11,8 @@ import copy
 import time
 
 # TODO fix winning move check currently allows checkmates less moves
+# TODO repitiion stalemates
+# TODO insufficiant material stalemates
 
 
 def highlight_white(text):
