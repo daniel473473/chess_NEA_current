@@ -262,7 +262,7 @@ class Chess_Piece(pygame.sprite.Sprite):
 
 # ghost class
 class Ghost(pygame.sprite.Sprite):
-    def __init__(self,x, y, color, height, width, min_height, min_width, board_size, time_to_move = 60, speed = 0.005):
+    def __init__(self,x, y, color, height, width, min_height, min_width, board_size, normal_sprite_path = None, scared_sprite_path = None, dead_sprite_path = None, time_to_move = 60, speed = 0.005):
         # set up the inital position of the ghost
         self.x = x
         self.y = y
@@ -284,13 +284,27 @@ class Ghost(pygame.sprite.Sprite):
         self.width = width
         self.height = height
         super().__init__()
+        # set appearence
         self.image = pygame.Surface([width, height])
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
         pygame.draw.rect(self.image,color,pygame.Rect(0, 0, width, height))
+        if not normal_sprite_path is None:
+          self.normal_picture = pygame.image.load(helper_functions.resource_path(normal_sprite_path)).convert_alpha()
+          self.normal_picture = pygame.transform.scale(self.normal_picture, (width, height))
+          self.image.blit(self.normal_picture, self.image.get_rect())
+        if not scared_sprite_path is None:
+          self.scared_picture = pygame.image.load(helper_functions.resource_path(scared_sprite_path)).convert_alpha()
+          self.scared_picture = pygame.transform.scale(self.scared_picture, (width, height))
+          #self.image.blit(self.scared_picture, self.image.get_rect())
+        if not dead_sprite_path is None:
+          self.dead_picture = pygame.image.load(helper_functions.resource_path(dead_sprite_path)).convert_alpha()
+          self.dead_picture = pygame.transform.scale(self.dead_picture, (width, height))
+          #self.image.blit(self.dead_picture, self.image.get_rect())
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        
           
 
     def change_direction(self, player_x, player_y, energized):
@@ -388,6 +402,11 @@ class Pacman_chess_game():
     self.game_timer = pygame.USEREVENT + 3
     pygame.time.set_timer(self.game_timer, 1000)
 
+    # reset last blitz timer
+    self.blitz = False
+    self.blitz_timer = pygame.USEREVENT + 4
+    pygame.time.set_timer(self.blitz_timer, 0)
+
     # reset energized
     self.energized = False
     self.energized_timer = pygame.USEREVENT + 1
@@ -408,19 +427,19 @@ class Pacman_chess_game():
     pygame.time.set_timer(self.dead_ghost_timer, 0) 
     # set up the ghosts 
     # top left ghost
-    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.GRAY, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2, normal_sprite_path="pngs/Chess_Gray_Pawn.png", time_to_move=60)
     self.all_sprites_list.add(ghost)
     self.ghosts.add(ghost)
     # top right ghost
-    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y - (self.cell_size * 3) // 4, Pac_man_colours.GRAY, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2, normal_sprite_path="pngs/Chess_Gray_Pawn.png", time_to_move=55)
     self.all_sprites_list.add(ghost)
     self.ghosts.add(ghost)
     # bottom left ghost
-    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    ghost = Ghost(self.board.x - (self.cell_size * 3) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.GRAY, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2, normal_sprite_path="pngs/Chess_Gray_Pawn.png", time_to_move=50)
     self.all_sprites_list.add(ghost)
     self.ghosts.add(ghost)
     # bottom right ghost
-    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.BLUE, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2)
+    ghost = Ghost(self.board.x + self.cell_size * 8 + (self.cell_size) // 4, self.board.y + self.cell_size * 8 + (self.cell_size * 1) // 4, Pac_man_colours.GRAY, self.cell_size // 2, self.cell_size // 2, self.board.y, self.board.x, self.cell_size * 8 - self.cell_size // 2, normal_sprite_path="pngs/Chess_Gray_Pawn.png", time_to_move=45)
     self.all_sprites_list.add(ghost)
     self.ghosts.add(ghost)
     
@@ -623,6 +642,12 @@ class Pacman_chess_game():
             pygame.time.set_timer(self.dead_ghost_timer, 0)
       elif event.type == self.game_timer:# increase the time of the game
           self.time += 1
+      elif event.type == self.blitz_timer:# end the game after blitz time
+        self.points *= 2 # double the score for finishing the game
+        print("Final Score:", self.points)
+        self.game_over = True
+        self.blitz = False
+        pygame.time.set_timer(self.blitz_timer, 0)
     
     # check if another piece should move
     if not Chess_Piece.pieces_moving and self.start_delay < 0:
@@ -648,8 +673,12 @@ class Pacman_chess_game():
           print(self.moves)
           self.check_next_move(self.moves[0])
        else:
-          print("Final Score:", self.points)
-          self.game_over = True
+          if not self.blitz:
+             pygame.time.set_timer(self.blitz_timer, 10000)
+             self.blitz = True
+             for i in self.ghosts:
+                i.active = True
+                i.time_to_move /= 2
     else:
        self.start_delay -= 1
     
@@ -674,8 +703,12 @@ class Pacman_chess_game():
     #  print(clock.get_fps())
 
 
-  def play(self, depth):
-    self.moves, self.boards, self.move_codes = chess_main.play_game(depth)
+  def prepare_game(self, depth):
+     return chess_main.play_game(depth)
+
+
+  def play(self, moves = [], boards = [], move_codes = []):
+    self.moves, self.boards, self.move_codes = moves, boards, move_codes
 
     self.reset()
 
@@ -691,6 +724,5 @@ if __name__ == "__main__":
       #moves = [[[4, 4], [6, 4]], [[3, 4], [1, 4]], [[5, 5], [7, 6]], [[2, 5], [0, 3]], [[3, 1], [7, 5]], [[3, 2], [0, 5]], [[[7, 6], [7, 4]], [[7, 5], [7, 7]]], [[2, 2], [1, 2]], [[5, 3], [3, 1]], [[3, 3], [1, 3]], [[3, 3], [4, 4]], [[4, 6], [0, 2]], [[2, 2], [3, 3]], [[2, 2], [1, 1]], [[5, 2], [7, 1]], [[2, 7], [1, 7]], [[4, 4], [5, 2]], [[6, 5], [3, 2]], [[6, 5], [7, 5]], [[2, 6], [2, 5]], [[3, 4], [5, 5]], [[7, 3], [4, 6]], [[2, 6], [3, 4]], [[2, 6], [1, 5]], [[4, 2], [5, 3]], [[6, 2], [7, 3]], [[5, 3], [6, 3]], [[2, 5], [0, 6]], [[6, 2], [6, 5]], [[1, 3], [0, 1]], [[4, 5], [7, 2]], [[2, 1], [1, 3]], [[2, 4], [4, 2]], [[0, 5], [0, 7]], [[2, 3], [4, 5]], [[0, 7], [0, 5]], [[3, 2], [4, 4]], [[1, 3], [0, 1]], [[1, 3], [2, 4]], [[1, 3], [0, 1]], [[7, 4], [7, 0]], [[0, 3], [0, 4]], [[1, 3], [3, 2]], [[1, 3], [0, 3]], [[4, 5], [2, 3]], [[0, 4], [0, 7]], [[5, 4], [4, 5]], [[0, 3], [0, 0]], [[4, 3], [5, 3]], [[0, 4], [0, 3]], [[5, 2], [6, 2]], [[0, 3], [0, 0]], [[5, 7], [6, 7]], [[0, 4], [0, 3]], [[7, 2], [5, 2]], [[4, 4], [0, 4]], [[7, 5], [7, 2]], [[0, 4], [0, 0]], [[7, 7], [7, 6]], [[3, 2], [2, 2]], [[3, 2], [4, 3]], [[2, 2], [1, 3]], [[7, 3], [7, 5]], [[3, 7], [2, 7]], [[4, 3], [7, 3]], [[0, 2], [0, 0]], [[4, 6], [6, 6]], [[0, 4], [0, 2]], [[3, 7], [4, 6]], [[3, 7], [2, 6]], [[7, 3], [4, 3]], [[0, 2], [0, 0]], [[5, 0], [6, 0]], [[0, 4], [0, 2]], [[7, 6], [7, 7]], [[0, 2], [0, 0]], [[4, 0], [5, 0]], [[0, 4], [0, 2]], [[3, 0], [4, 0]], [[0, 2], [0, 0]], [[2, 0], [3, 0]], [[0, 4], [0, 2]], [[7, 7], [7, 6]], [[0, 2], [0, 0]], [[5, 1], [6, 1]], [[0, 4], [0, 2]], [[4, 1], [5, 1]], [[4, 7], [3, 7]], [[5, 3], [7, 3]], [[2, 6], [1, 6]], [[4, 3], [5, 3]], [[0, 2], [0, 0]], [[3, 1], [4, 1]], [[3, 1], [2, 2]], [[4, 7], [4, 3]], [[2, 0], [3, 1]], [[4, 1], [4, 7]], [[3, 0], [2, 0]], [[7, 1], [4, 1]], [[4, 0], [3, 0]], [[7, 2], [5, 4]], [[3, 2], [0, 2]], [[5, 0], [5, 2]]]
       print(time.time() - start_time)
       #print(moves)
-      game.play(1)
+      game.play(moves, boards, move_codes)
       print(game.points)
-      pygame.quit()

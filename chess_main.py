@@ -176,12 +176,18 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                             #return (mv, math.inf)
                         else:
                             mv[3] = True
-                    if len(game.White_pieces) == 1 and len(game.Black_pieces) == 1 or game.mandatory_move_delay >= 50:# check for stalemate
+                    total_pieces = game.White_pieces + game.Black_pieces
+                    if len(total_pieces) == 2 or\
+                        game.mandatory_move_delay >= 50 or\
+                        len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
+                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
                         mv[5] = True
                         #game.undoMove(game.board[mv[1][0]][mv[1][1]])
                         #return (mv, 0)
-                    
-                    new_score = minimax(game, turn + 1, depth-1, alpha, beta, False)[1]
+                    # quintessentence search
+                    #new_score = minimax(game, turn + 1, (1 if  depth == 1 and game.checkCheck(opposing_piece.y, opposing_piece.x, opposing_player = opposing_piece.player, board = game.board) else depth - 1), alpha, beta, False)[1]
+
+                    new_score = minimax(game, turn + 1, depth - 1, alpha, beta, False)[1]
 
                     if not value or new_score > value: # Update the best move and alpha value.
                         value = new_score
@@ -235,12 +241,19 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                             #return (mv, -math.inf)
                         else:
                             mv[3] = True
-                    if (len(game.White_pieces) == 1 and len(game.Black_pieces) == 1) or game.mandatory_move_delay >= 50:# check for stalemate
+                    total_pieces = game.White_pieces + game.Black_pieces
+                    if len(total_pieces) == 2 or\
+                        game.mandatory_move_delay >= 50 or\
+                        len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
+                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
                         mv[5] = True
                         #game.undoMove(game.board[mv[1][0]][mv[1][1]])
                         #return (mv, 0)
                     
-                    new_score = minimax(game, turn + 1, depth-1, alpha, beta, True)[1]
+                    # quitenicence search
+                    #new_score = minimax(game, turn + 1, (1 if  depth == 1 and game.checkCheck(opposing_piece.y, opposing_piece.x, opposing_player = opposing_piece.player, board = game.board) else depth - 1), alpha, beta, True)[1]
+
+                    new_score = minimax(game, turn + 1, depth - 1, alpha, beta, True)[1]
 
                     if not value or new_score < value: # Update the best move and alpha value.
                         value = new_score
@@ -397,3 +410,4 @@ def play_game(depth, show = False):
 if __name__ == "__main__":
     while True:
         play_game(1, show=True)
+        input()

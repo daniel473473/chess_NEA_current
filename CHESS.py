@@ -772,7 +772,11 @@ class chess:# the whole game class
                         is_checkmate = True
                     else:
                         is_check = True
-            if (len(self.White_pieces) == 1 and len(self.Black_pieces) == 1) or self.mandatory_move_delay >= 50:# check for stalemate
+            total_pieces = self.White_pieces + self.Black_pieces
+            if len(total_pieces) == 2 or\
+                self.mandatory_move_delay >= 50 or\
+                    len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
+                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
                 is_stalemate = True
             self.undoMove(self.board[move[0]][move[1]])# one second delay depth 3
 

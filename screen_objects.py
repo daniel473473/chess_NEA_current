@@ -4,6 +4,7 @@ import Pac_man_side
 import helper_functions
 import sys
 import actual_screen_objects
+import threading
 
 
 # things to set up for the whole game
@@ -21,6 +22,18 @@ size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
 pygame.display.set_caption("Chess-man")
+
+# loading screen control
+loading = False
+
+
+def run_loading_screen():
+    global current_screen
+    current_screen = loading_screen
+    while loading:
+        current_screen.play_step()
+
+
 
 class Button(pygame.sprite.Sprite):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size = None):
@@ -81,9 +94,15 @@ class Game_Button(Button):
 
     def click(self):
         global current_screen
+        global loading
         global game_screen
+        loading_thread = threading.Thread(target=run_loading_screen)
+        loading = True
+        loading_thread.start()
+        moves, boards, move_codes = game_screen.prepare_game(main_menu.depth)
+        loading = False
         current_screen = game_screen
-        score, time = current_screen.play(main_menu.depth)
+        score, time = current_screen.play(moves, boards, move_codes)
         data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time})
         # sort the scores from highest to lowest
@@ -305,11 +324,19 @@ class Play_Again_Screen(Base_Screen):
         self.time_box.update_text(f"Time : {self.time}")
         
 
+class Loading_Screen(Base_Screen):
+    def __init__(self):
+        super().__init__()
+        self.images.add(actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.45, WIDTH * 0.4, HEIGHT * 0.1, Pac_man_colours.BLUE, "Loading Game!", int(HEIGHT * 0.1)))
+
+
+
 if __name__ == "__main__":
     main_menu = Main_Menu_Screen()
     high_score_screen = High_Score_Screen()
     game_screen = Pac_man_side.Pacman_chess_game()
     play_again_screen = Play_Again_Screen()
+    loading_screen = Loading_Screen()
     current_screen = main_menu
     while True:
         current_screen.play_step()
