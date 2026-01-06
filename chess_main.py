@@ -412,7 +412,3 @@ def play_game(depth, show = False):
 if __name__ == "__main__":
     while True:
         play_game(1, show=True)
-<<<<<<< HEAD
-        input()
-=======
->>>>>>> ede1890217e79916638f04d72c55a7ef155ea11b
