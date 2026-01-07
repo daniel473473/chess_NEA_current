@@ -70,6 +70,9 @@ class chess:# the whole game class
 
         self.move_time = 0
 
+        # boards seen
+        self.boards = {}
+
 
     def storePieces(self, board):
         White_pieces = []
@@ -459,8 +462,18 @@ class chess:# the whole game class
         self.White_pieces.sort()
         self.Black_pieces.sort()
 
+        # add new board state to boards
+        state = str(self)
+        if state in self.boards:
+            self.boards[state] += 1
+        else:
+            self.boards[state] = 0
+
 
     def undoMove(self, piece):
+        # remove current board state from boards
+        state = str(self)
+        self.boards[state] -= 1
         
         # undo the mandatory move delay changes
         self.mandatory_move_delay = self.mandatory_move_delay_history.pop()
@@ -774,10 +787,12 @@ class chess:# the whole game class
                     else:
                         is_check = True
             total_pieces = self.White_pieces + self.Black_pieces
+            state = str(self)
             if len(total_pieces) == 2 or\
                 self.mandatory_move_delay >= 50 or\
-                    len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
-                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
+                len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
+                len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
+                (state in self.boards and self.boards[state] == 2):# check for stalemate
                 is_stalemate = True
             self.undoMove(self.board[move[0]][move[1]])# one second delay depth 3
 
