@@ -79,6 +79,14 @@ class Button(pygame.sprite.Sprite):
         pass
 
 
+class End_Game_Button(Button): # button to exit the game
+    def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
+        super().__init__(x, y, x_size, y_size, base_colour, selected_colour, text, text_size)
+
+    def click(self):
+        sys.exit()
+
+
 class High_Score_Button(Button):
     def __init__(self, x, y, x_size, y_size, base_colour, selected_colour, text, text_size=None):
         super().__init__(x, y, x_size, y_size, base_colour, selected_colour, text, text_size)
@@ -105,8 +113,7 @@ class Game_Button(Button):
         moves, boards, move_codes = game_screen.prepare_game(main_menu.depth)
         loading = False
         current_screen = game_screen
-        current_screen.reset()
-        score, time = current_screen.play(moves, boards, move_codes)
+        score, time = current_screen.play(moves=moves, boards=boards, move_codes=move_codes)
         data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time, "difficulty": main_menu.depth})
         # sort the scores from highest to lowest
@@ -358,6 +365,9 @@ class Main_Menu_Screen(Base_Screen):
         self.sliders.add(Slider(WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.1, HEIGHT * 0.5, WIDTH * 0.5, HEIGHT * 0.1, WIDTH * 0.3, HEIGHT * 0.2, Pac_man_colours.BLUE, Pac_man_colours.LIGHT_GREEN, 3, "Skill", ID="Depth"))
         self.buttons.add(Game_Button(WIDTH * 0.5, HEIGHT * 0.8, WIDTH * 0.15, HEIGHT * 0.1, (255, 0, 0), (255, 255, 0), "Play"))
         self.images.add(actual_screen_objects.Text_Box(WIDTH * 0.25, HEIGHT * 0.2, WIDTH * 0.5, HEIGHT * 0.1, Pac_man_colours.BLUE, "Welcome to Chess-Man", int(HEIGHT * 0.1)))
+        # add a button to exit the game
+        self.buttons.add(End_Game_Button(WIDTH * 0.825, HEIGHT * 0.125, WIDTH * 0.1, HEIGHT * 0.1, Pac_man_colours.BLUE, Pac_man_colours.YELLOW, "Quit", text_size=int(HEIGHT * 0.05)))
+
 
     def check_data(self):
         for item in self.data:
