@@ -179,10 +179,12 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         else:
                             mv[3] = True
                     total_pieces = game.White_pieces + game.Black_pieces
+                    state = str(game)
                     if len(total_pieces) == 2 or\
                         game.mandatory_move_delay >= 50 or\
                         len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
-                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
+                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
+                        (state in game.boards and game.boards[state] == 2):# check for stalemate
                         mv[5] = True
                         #game.undoMove(game.board[mv[1][0]][mv[1][1]])
                         #return (mv, 0)
@@ -244,10 +246,12 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         else:
                             mv[3] = True
                     total_pieces = game.White_pieces + game.Black_pieces
+                    state = str(game)
                     if len(total_pieces) == 2 or\
                         game.mandatory_move_delay >= 50 or\
                         len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
-                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces]:# check for stalemate
+                        len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
+                        (state in game.boards and game.boards[state] == 2):# check for stalemate
                         mv[5] = True
                         #game.undoMove(game.board[mv[1][0]][mv[1][1]])
                         #return (mv, 0)
