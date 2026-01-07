@@ -486,10 +486,18 @@ class Pacman_chess_game():
         self.pieces.add(piece)
         self.board.board[7 - (i//8)][7 - (i%8)] = piece
 
-    # reset the text
-    self.text = self.font.render(str(self.points), True, (255, 255, 255))
+    # reset the info box
+    self.info_box = actual_screen_objects.Text_Box(WIDTH * 0.05, HEIGHT * 0.05, WIDTH * 0.1, HEIGHT * 0.15, Pac_man_colours.BLACK, "", 0)
+    self.images.add(self.info_box)
+    self.all_sprites_list.add(self.info_box)
+    # reset the text for points
+    self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
     # reset the rect of the text
-    self.text_rect = self.text.get_rect(center=(50, 50))  # Centered in the window
+    self.text_rect = self.text.get_rect(center=(WIDTH * 0.1, HEIGHT * 0.1))  # Centered in the window
+    # reset the text for time
+    self.time_text = self.font.render(f"Time : {str(self.time)}", True, (255, 255, 255))
+    # reset the rect of the text
+    self.time_text_rect = self.time_text.get_rect(center=(WIDTH * 0.1, HEIGHT * 0.15))  # Centered in the window
 
 
   def convert_board_coors(self, board_x, board_y, offset = 0):
@@ -526,7 +534,7 @@ class Pacman_chess_game():
     if eaten_fruits:
       for fruit in eaten_fruits:
         self.points += fruit.points
-      self.text = self.font.render(str(self.points), True, (255, 255, 255))  # White color
+      self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
 
     # check for collisions with energizers and delete any collided with
     collected_energizers = pygame.sprite.spritecollide(self.player, self.energizers, True)
@@ -537,7 +545,7 @@ class Pacman_chess_game():
         self.energized = True
         pygame.time.set_timer(self.energized_timer, 3000)
 
-        self.text = self.font.render(str(self.points), True, Pac_man_colours.WHITE)  # White color
+        self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
     
     # check for collisions with chess pieces and player to kill player if the piece is moving else act as a wall
     collided_pieces = pygame.sprite.spritecollide(self.player, self.pieces, False)
@@ -576,7 +584,7 @@ class Pacman_chess_game():
               piece.active = False
               piece.go_home()
               self.points += 2 ** (self.dead_ghosts_this_round - 1) * 50
-              self.text = self.font.render(str(self.points), True, Pac_man_colours.WHITE)  # White color
+              self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
             else:
               self.game_over = True
 
@@ -642,9 +650,10 @@ class Pacman_chess_game():
             pygame.time.set_timer(self.dead_ghost_timer, 0)
       elif event.type == self.game_timer:# increase the time of the game
           self.time += 1
+          self.time_text = self.font.render(f"Time : {str(self.time)}", True, (255, 255, 255))
       elif event.type == self.blitz_timer:# end the game after blitz time
         self.points *= 2 # double the score for finishing the game
-        print("Final Score:", self.points)
+        print("Final Score : ", self.points)
         self.game_over = True
         self.blitz = False
         pygame.time.set_timer(self.blitz_timer, 0)
@@ -689,7 +698,6 @@ class Pacman_chess_game():
     self.check_collisions()
     screen.fill(SURFACE_COLOR)
     self.board.render(screen)
-    screen.blit(self.text, self.text_rect)
     #self.all_sprites_list.draw(screen)
     self.images.draw(screen)
     self.fruits.draw(screen)
@@ -697,6 +705,8 @@ class Pacman_chess_game():
     self.pieces.draw(screen)
     self.ghosts.draw(screen)
     self.players.draw(screen)
+    screen.blit(self.text, self.text_rect)
+    screen.blit(self.time_text, self.time_text_rect)
     pygame.display.flip()
     clock.tick(60)
     #if clock.get_fps() < 60:
