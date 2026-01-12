@@ -164,21 +164,23 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.image.fill(SURFACE_COLOR)
         self.image.set_colorkey(COLOR)
         pygame.draw.rect(self.image, self.colour, pygame.Rect(0, 0, size, size))
-        if not sprite_path is None:
-          self.picture = pygame.image.load(helper_functions.resource_path(sprite_path)).convert_alpha()
-          self.picture = pygame.transform.scale(self.picture, (size, size))
-          self.image.blit(self.picture, self.image.get_rect())
-        else:
-          # temporary draw text of the name of the piece
-          self.font = pygame.font.Font(None, int(size/2))
-          self.text_sprite = self.font.render((self.name), True, Pac_man_colours.WHITE)
-          self.image_center = self.image.get_rect().center
-          self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
+        self.draw_image()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
 
+  def draw_image(self):
+    if not self.sprite_path is None:
+          self.picture = pygame.image.load(helper_functions.resource_path(self.sprite_path)).convert_alpha()
+          self.picture = pygame.transform.scale(self.picture, (self.size, self.size))
+          self.image.blit(self.picture, self.image.get_rect())
+    else:
+          # temporary draw text of the name of the piece
+          self.font = pygame.font.Font(None, int(self.size/2))
+          self.text_sprite = self.font.render((self.name), True, Pac_man_colours.WHITE)
+          self.image_center = self.image.get_rect().center
+          self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
   
   
   def move_to(self, x, y):
@@ -462,26 +464,28 @@ class Pacman_chess_game():
     
     # create the chess pieces
     self.chess_piece_size = self.cell_size * 0.9
+    self.last_piece_moved = None
     self.piece_to_remove = False
+    self.promotion_data = False
     Chess_Piece.pieces_moving = [] # reset the moving pieces so new pieces can move
 
     # black pieces
-    blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
-    black_file_paths = ["pngs/Chess_Black_Rook.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Queen.png", "pngs/Chess_Black_King.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Rook.png",
+    self.blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
+    self.black_file_paths = ["pngs/Chess_Black_Rook.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Queen.png", "pngs/Chess_Black_King.png", "pngs/Chess_Black_Bishop.png", "pngs/Chess_Black_Knight.png", "pngs/Chess_Black_Rook.png",
                          "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png", "pngs/Chess_Black_Pawn.png"]
-    whitenames = ["WR", "WN", "WB", "WK", "WQ", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
-    white_file_paths = ["pngs/Chess_White_Rook.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_King.png", "pngs/Chess_White_Queen.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Rook.png",
+    self.whitenames = ["WR", "WN", "WB", "WK", "WQ", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
+    self.white_file_paths = ["pngs/Chess_White_Rook.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_King.png", "pngs/Chess_White_Queen.png", "pngs/Chess_White_Bishop.png", "pngs/Chess_White_Knight.png", "pngs/Chess_White_Rook.png",
                         "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png", "pngs/Chess_White_Pawn.png"]
     # black pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.RED,  Pac_man_colours.DARK_RED, name = blacknames[i], sprite_path= black_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(i % 8, i // 8, offset = self.cell_size * 0.05), i % 8, i // 8, self.chess_piece_size, Pac_man_colours.RED, Pac_man_colours.RED,  Pac_man_colours.DARK_RED, name = self.blacknames[i], sprite_path= self.black_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[i//8][i%8] = piece
 
     # white pieces
     for i in range(16):
-        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.GREEN, Pac_man_colours.DARK_GREEN, name = whitenames[i], sprite_path= white_file_paths[i])
+        piece = Chess_Piece(*self.convert_board_coors(7 - (i % 8), 7 - (i // 8), offset = self.cell_size * 0.05), 7 - (i % 8), 7 - (i // 8), self.chess_piece_size, Pac_man_colours.GREEN, Pac_man_colours.GREEN, Pac_man_colours.DARK_GREEN, name = self.whitenames[i], sprite_path= self.white_file_paths[i])
         self.all_sprites_list.add(piece)
         self.pieces.add(piece)
         self.board.board[7 - (i//8)][7 - (i%8)] = piece
@@ -510,13 +514,11 @@ class Pacman_chess_game():
 
     # set the piece moving
     x, y = end_coor[1], end_coor[0]
-    if self.board.board[y][x] != "  ":# if there is a piece in the way remove it
-        self.piece_to_remove = self.board.board[y][x]
 
-    else:# add a fruit where the piece was
-        f1 = Fruit(Pac_man_colours.RED, *self.convert_board_coors(piece.board_x, piece.board_y, offset = self.cell_size // 2 - self.board.cell_size // 16 - 1), self.cell_size // 8, 1)
-        self.all_sprites_list.add(f1)
-        self.fruits.add(f1)
+    # add a fruit where the piece was
+    f1 = Fruit(Pac_man_colours.RED, *self.convert_board_coors(piece.board_x, piece.board_y, offset = self.cell_size // 2 - self.board.cell_size // 16 - 1), self.cell_size // 8, 1)
+    self.all_sprites_list.add(f1)
+    self.fruits.add(f1)
 
     
     # set the new location to be the location of the piece
@@ -661,6 +663,7 @@ class Pacman_chess_game():
     # check if another piece should move
     if not Chess_Piece.pieces_moving and self.start_delay < 0:
        if self.piece_to_remove:
+           print(f"piece there? {self.piece_to_remove in self.pieces}")
            # add a energizer where the piece was
            e1 = Energizer(Pac_man_colours.YELLOW, *self.convert_board_coors(self.piece_to_remove.board_x, self.piece_to_remove.board_y, offset = self.cell_size // 2 - self.board.cell_size // 12 - 1), self.cell_size // 6, 10)
            self.all_sprites_list.add(e1)
@@ -673,13 +676,57 @@ class Pacman_chess_game():
               for i in self.ghosts:
                   if not i.active:
                      i.active = True
-                     break
-           self.piece_to_remove = False    
+                     break 
        if len(self.moves) > 1:
+          # update the data for the last moved piece
+          if self.promotion_data:
+            self.last_piece_moved.sprite_path = self.promotion_data[1]
+            self.last_piece_moved.name = self.promotion_data[0]
+            self.last_piece_moved.draw_image()
+            self.promotion_data = False
+
+
+          # change the piece for promotion
+          
+          promotion = self.promotions.pop(0)
+          if promotion is not None:
+            if self.turn % 2 == 1:
+              match promotion:
+                  case "Q":
+                    self.promotion_data = ("WQ", "pngs/Chess_White_Queen.png")
+                  case "K":
+                    self.promotion_data = ("WK", "pngs/Chess_White_King.png")
+                  case "B":
+                    self.promotion_data = ("WB", "pngs/Chess_White_Bishop.png")
+                  case "N":
+                    self.promotion_data = ("WN", "pngs/Chess_White_Knight.png")
+                  case "R":
+                    self.promotion_data = ("WR", "pngs/Chess_White_Rook.png")
+            else:
+              match promotion:
+                case "Q":
+                  self.promotion_data = ("BQ", "pngs/Chess_Black_Queen.png")
+                case "K":
+                  self.promotion_data = ("BK", "pngs/Chess_Black_King.png")
+                case "B":
+                  self.promotion_data = ("BB", "pngs/Chess_Black_Bishop.png")
+                case "N":
+                  self.promotion_data = ("BN", "pngs/Chess_Black_Knight.png")
+                case "R":
+                  self.promotion_data = ("BR", "pngs/Chess_Black_Rook.png")
+
+          
+          # add the taken piece
+          self.piece_to_remove = False if self.taken_pieces[0] is None else self.board.board[self.taken_pieces[0][0]][self.taken_pieces[0][1]]
+          self.taken_pieces.pop(0)
+          # show the player the next move
           self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
           self.run_next_move(self.moves.pop(0))
           self.boards.pop(0)
-          print(self.moves)
+          # save the piece that moved
+          self.last_piece_moved = self.board.board[self.moves[0][1][0]][self.moves[0][1][1]]
+          print(F"last piece to move {self.piece_to_remove}, piece that was taken {self.piece_to_remove}")
+          #print(self.moves)
           self.check_next_move(self.moves[0])
        else:
           if not self.blitz:
@@ -717,8 +764,9 @@ class Pacman_chess_game():
      return chess_main.play_game(depth)
 
 
-  def play(self, moves = [], boards = [], move_codes = []):
-    self.moves, self.boards, self.move_codes = moves, boards, move_codes
+  def play(self, moves = [], boards = [], move_codes = [], taken_pieces = [], promotions = []):
+    self.moves, self.boards, self.move_codes, self.taken_pieces, self.promotions = moves, boards, move_codes, taken_pieces, promotions
+    #self.taken_pieces.pop(0)  # remove first taken piece as no piece is taken on first move
 
     self.reset()
 
@@ -730,9 +778,9 @@ if __name__ == "__main__":
     while True:
       game = Pacman_chess_game()
       start_time = time.time()
-      moves, boards, move_codes = chess_main.play_game(1)
+      moves, boards, move_codes, taken_pieces, promotions = chess_main.play_game(1)
       #moves = [[[4, 4], [6, 4]], [[3, 4], [1, 4]], [[5, 5], [7, 6]], [[2, 5], [0, 3]], [[3, 1], [7, 5]], [[3, 2], [0, 5]], [[[7, 6], [7, 4]], [[7, 5], [7, 7]]], [[2, 2], [1, 2]], [[5, 3], [3, 1]], [[3, 3], [1, 3]], [[3, 3], [4, 4]], [[4, 6], [0, 2]], [[2, 2], [3, 3]], [[2, 2], [1, 1]], [[5, 2], [7, 1]], [[2, 7], [1, 7]], [[4, 4], [5, 2]], [[6, 5], [3, 2]], [[6, 5], [7, 5]], [[2, 6], [2, 5]], [[3, 4], [5, 5]], [[7, 3], [4, 6]], [[2, 6], [3, 4]], [[2, 6], [1, 5]], [[4, 2], [5, 3]], [[6, 2], [7, 3]], [[5, 3], [6, 3]], [[2, 5], [0, 6]], [[6, 2], [6, 5]], [[1, 3], [0, 1]], [[4, 5], [7, 2]], [[2, 1], [1, 3]], [[2, 4], [4, 2]], [[0, 5], [0, 7]], [[2, 3], [4, 5]], [[0, 7], [0, 5]], [[3, 2], [4, 4]], [[1, 3], [0, 1]], [[1, 3], [2, 4]], [[1, 3], [0, 1]], [[7, 4], [7, 0]], [[0, 3], [0, 4]], [[1, 3], [3, 2]], [[1, 3], [0, 3]], [[4, 5], [2, 3]], [[0, 4], [0, 7]], [[5, 4], [4, 5]], [[0, 3], [0, 0]], [[4, 3], [5, 3]], [[0, 4], [0, 3]], [[5, 2], [6, 2]], [[0, 3], [0, 0]], [[5, 7], [6, 7]], [[0, 4], [0, 3]], [[7, 2], [5, 2]], [[4, 4], [0, 4]], [[7, 5], [7, 2]], [[0, 4], [0, 0]], [[7, 7], [7, 6]], [[3, 2], [2, 2]], [[3, 2], [4, 3]], [[2, 2], [1, 3]], [[7, 3], [7, 5]], [[3, 7], [2, 7]], [[4, 3], [7, 3]], [[0, 2], [0, 0]], [[4, 6], [6, 6]], [[0, 4], [0, 2]], [[3, 7], [4, 6]], [[3, 7], [2, 6]], [[7, 3], [4, 3]], [[0, 2], [0, 0]], [[5, 0], [6, 0]], [[0, 4], [0, 2]], [[7, 6], [7, 7]], [[0, 2], [0, 0]], [[4, 0], [5, 0]], [[0, 4], [0, 2]], [[3, 0], [4, 0]], [[0, 2], [0, 0]], [[2, 0], [3, 0]], [[0, 4], [0, 2]], [[7, 7], [7, 6]], [[0, 2], [0, 0]], [[5, 1], [6, 1]], [[0, 4], [0, 2]], [[4, 1], [5, 1]], [[4, 7], [3, 7]], [[5, 3], [7, 3]], [[2, 6], [1, 6]], [[4, 3], [5, 3]], [[0, 2], [0, 0]], [[3, 1], [4, 1]], [[3, 1], [2, 2]], [[4, 7], [4, 3]], [[2, 0], [3, 1]], [[4, 1], [4, 7]], [[3, 0], [2, 0]], [[7, 1], [4, 1]], [[4, 0], [3, 0]], [[7, 2], [5, 4]], [[3, 2], [0, 2]], [[5, 0], [5, 2]]]
       print(time.time() - start_time)
       #print(moves)
-      game.play(moves, boards, move_codes)
+      game.play(moves, boards, move_codes, taken_pieces, promotions)
       print(game.points)

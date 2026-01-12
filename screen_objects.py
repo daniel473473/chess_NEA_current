@@ -110,10 +110,10 @@ class Game_Button(Button):
         loading_thread = threading.Thread(target=run_loading_screen)
         loading = True
         loading_thread.start()
-        moves, boards, move_codes = game_screen.prepare_game(main_menu.depth)
+        moves, boards, move_codes, taken_pieces, promotions = game_screen.prepare_game(main_menu.depth)
         loading = False
         current_screen = game_screen
-        score, time = current_screen.play(moves=moves, boards=boards, move_codes=move_codes)
+        score, time = current_screen.play(moves=moves, boards=boards, move_codes=move_codes, taken_pieces=taken_pieces, promotions=promotions)
         data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time, "difficulty": main_menu.depth})
         # sort the scores from highest to lowest

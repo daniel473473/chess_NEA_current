@@ -774,9 +774,18 @@ class chess:# the whole game class
         is_stalemate = False
         disambiguateX = False
         disambiguateY = False
+        takes_at = None
         legal = True
         attacked_piece = self.board[move[0]][move[1]]
         taking = (piece.code == constants.PAWN_CODE and attacked_piece.code == constants.SHADOW_PAWN_CODE and attacked_piece.player != piece.player) or attacked_piece.symbol != constants.EMPTY_CELL
+        
+        # find where the piece would take if it takes
+        if taking:
+            if attacked_piece.code == constants.SHADOW_PAWN_CODE:
+                takes_at = (attacked_piece.pawn_row, attacked_piece.pawn_column)
+            else:
+                takes_at = (move[0], move[1])
+        
         if check:
             self.movePiece(move[0], move[1], row, column, turn, promotion=promotion, taking=taking, saveHistory=True)# one second delay depth 3
             if self.inCheck(turn, self.board):# one second delay depth 3
@@ -809,7 +818,8 @@ class chess:# the whole game class
                 score += attacked_piece.value / piece.value
             if promotion:
                 score += 10
-        return legal, [piece.code, move, [row, column], is_check, is_checkmate, is_stalemate, False, promotion, taking, score, disambiguateY, disambiguateX]
+        # move indexes 0 piece code, 1 end move, 2 start move, 3 is check, 4 is checkmate, 5 is stalemate, 6 is castle, 7 promotion, 8 taking, 9 score, 10 disambiguateY, 11 disambiguateX, 12 takes at
+        return legal, [piece.code, move, [row, column], is_check, is_checkmate, is_stalemate, False, promotion, taking, score, disambiguateY, disambiguateX, takes_at]
 
 
     def playStep(self, code):

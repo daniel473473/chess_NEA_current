@@ -310,6 +310,12 @@ def play_game(depth, show = False):
     # codes for the moves to be displayed at the top of the screen
     move_codes = []
 
+    # locations of all of the taken pieces
+    taken_pieces = []
+
+    # promotions that occurred during the game
+    promotions = []
+
     boards = [copy.deepcopy(board.board)]
 
     # temp board sync stuff
@@ -374,6 +380,12 @@ def play_game(depth, show = False):
         # add the used moves the list of moves
         move_codes.append(code)
 
+        # add taken pieces
+        taken_pieces.append(encoded_code[12] if not encoded_code[0] == "0" else None)
+
+        # add if a piece promoted
+        promotions.append(encoded_code[7] if not encoded_code[0] == "0" else None)
+
         if encoded_code[0] != "0":
             moves_used.append(encoded_code[1:3])
         else:
@@ -382,26 +394,6 @@ def play_game(depth, show = False):
                 moves_used.append([[[7, 6], [7, 4]], [[7,5], [7,7]]] if encoded_code == "0-0" else [[[7, 2], [7, 4]], [[7, 3], [7, 0]]])
             else:
                 moves_used.append([[[0, 6], [0, 4]], [[0,5], [0,7]]] if encoded_code == "0-0" else [[[0, 2], [0, 4]], [[0, 3], [0, 0]]])
-        
-        '''if type(moves_used[-1][0][0]) == list:# castle move
-            for move in moves_used[-1]:
-                temp_board[move[0][0]][move[0][1]], temp_board[move[1][0]][move[1][1]] = temp_board[move[1][0]][move[1][1]], "  "
-        else:
-            temp_board[moves_used[-1][0][0]][moves_used[-1][0][1]], temp_board[moves_used[-1][1][0]][moves_used[-1][1][1]] = temp_board[moves_used[-1][1][0]][moves_used[-1][1][1]], "  " 
-            if encoded_code[7] != None:# promotion
-                temp_board[moves_used[-1][0][0]][moves_used[-1][0][1]] = board.board[moves_used[-1][0][0]][moves_used[-1][0][1]].player + encoded_code[7]
-        for i in range(8):
-            for j in range(8):
-                if temp_board[i][j] != "  " and temp_board[i][j] != board.board[i][j].player + board.board[i][j].symbol:
-                    print("board desync")
-                    print("_" + temp_board[i][j]+ "_")
-                    for i in temp_board:
-                        for j in i:
-                            print(j, end=' ')
-                        print()
-                    board.display(board.board)
-                    input()'''
-
 
         turn = (turn + 1) % 2
         if board.turn > 1000:
@@ -411,7 +403,7 @@ def play_game(depth, show = False):
         board.display(board.board)
         print(f"Game Over {'White' if board.turn % 2 == 0 else 'Black'} wins")
         print(moves_used)
-    return moves_used, boards, move_codes
+    return moves_used, boards, move_codes, taken_pieces, promotions
 
 if __name__ == "__main__":
     while True:
