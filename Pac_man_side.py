@@ -735,6 +735,9 @@ class Pacman_chess_game():
              for i in self.ghosts:
                 i.active = True
                 i.time_to_move /= 2
+          if self.energized: # turn off energized for end of game
+             self.energized = False
+             pygame.time.set_timer(self.energized_timer, 0)
     else:
        self.start_delay -= 1
     
