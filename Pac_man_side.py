@@ -382,6 +382,9 @@ class Pacman_chess_game():
     # reset pygame events
     pygame.event.clear()
 
+    # reset background colour
+    self.SURFACE_COLOR = Pac_man_colours.HAPPY_GREEN
+
     # reset the lists of sprites
     self.all_sprites_list = pygame.sprite.Group()
     self.fruits = pygame.sprite.Group()
@@ -398,6 +401,9 @@ class Pacman_chess_game():
 
     # reset the points
     self.points = 0
+
+    # reset the turn
+    self.turn = 1
 
     # reset the time of the game
     self.time = 0
@@ -511,6 +517,9 @@ class Pacman_chess_game():
   def move_piece(self, start_coor, end_coor):
     # find what piece is moving
     piece = self.board.board[start_coor[0]][start_coor[1]]
+
+    # last moved piece
+    self.last_piece_moved = piece
 
     # set the piece moving
     x, y = end_coor[1], end_coor[0]
@@ -677,7 +686,7 @@ class Pacman_chess_game():
                   if not i.active:
                      i.active = True
                      break 
-       if len(self.moves) > 1:
+       if len(self.moves) > 0:
           # update the data for the last moved piece
           if self.promotion_data:
             self.last_piece_moved.sprite_path = self.promotion_data[1]
@@ -723,18 +732,24 @@ class Pacman_chess_game():
           self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
           self.run_next_move(self.moves.pop(0))
           self.boards.pop(0)
-          # save the piece that moved
-          self.last_piece_moved = self.board.board[self.moves[0][1][0]][self.moves[0][1][1]]
-          print(F"last piece to move {self.piece_to_remove}, piece that was taken {self.piece_to_remove}")
+          
           #print(self.moves)
-          self.check_next_move(self.moves[0])
+          if len(self.moves) > 0:
+            self.check_next_move(self.moves[0])
+
+          # increase the turn
+          self.turn += 1
        else:
           if not self.blitz:
+             # change background colour
+             self.SURFACE_COLOR = Pac_man_colours.DARK_RED
              pygame.time.set_timer(self.blitz_timer, 10000)
              self.blitz = True
              for i in self.ghosts:
                 i.active = True
                 i.time_to_move /= 2
+             for piece in self.pieces:
+                 piece.flashing = False
           if self.energized: # turn off energized for end of game
              self.energized = False
              pygame.time.set_timer(self.energized_timer, 0)
@@ -746,7 +761,7 @@ class Pacman_chess_game():
 
     self.all_sprites_list.update()
     self.check_collisions()
-    screen.fill(SURFACE_COLOR)
+    screen.fill(self.SURFACE_COLOR)
     self.board.render(screen)
     #self.all_sprites_list.draw(screen)
     self.images.draw(screen)
@@ -769,7 +784,7 @@ class Pacman_chess_game():
 
   def play(self, moves = [], boards = [], move_codes = [], taken_pieces = [], promotions = []):
     self.moves, self.boards, self.move_codes, self.taken_pieces, self.promotions = moves, boards, move_codes, taken_pieces, promotions
-    #self.taken_pieces.pop(0)  # remove first taken piece as no piece is taken on first move
+    print(self.move_codes)
 
     self.reset()
 
