@@ -129,7 +129,7 @@ def is_terminal_node(game, moves, turn):
         game.mandatory_move_delay >= 50 or\
         len(total_pieces) == 3 and ("N" in [piece.code for piece in total_pieces] or "B" in [piece.code for piece in total_pieces]) or\
         len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
-        (state in self.boards and game.boards[state] == 2):# check for stalemate
+        (state in game.boards and game.boards[state] == 2):# check for stalemate
         return True
     for mv in moves:
         if not mv[0] == "0":
