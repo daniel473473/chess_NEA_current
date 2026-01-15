@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.3.1">
   <diagram name="Page-1" id="nNP8QDWQ5Yi81dz9D2xR">
-    <mxGraphModel dx="2637" dy="1881" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="3530" dy="2271" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -206,7 +206,7 @@
         <mxCell id="8tV07jWloe2JtdNbEtEE-34" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-33" value="Yes">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-40" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-39" value="">
+        <mxCell id="8tV07jWloe2JtdNbEtEE-40" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-39" value="No">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-31" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is game over" vertex="1">
@@ -275,21 +275,22 @@
         <mxCell id="8tV07jWloe2JtdNbEtEE-62" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-57" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-61" value="No">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-57" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="Should Blitz mode be activated" vertex="1">
+        <mxCell id="8tV07jWloe2JtdNbEtEE-57" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="Is Blitz Mode Over" vertex="1">
           <mxGeometry height="80" width="80" x="2660" y="1000" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-63" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2860" y="1130" />
-            </Array>
-            <mxPoint x="2700" y="1130" as="targetPoint" />
-          </mxGeometry>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-98" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-97" value="">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-59" parent="1" style="whiteSpace=wrap;html=1;" value="Activate Blitz mode" vertex="1">
+        <mxCell id="8tV07jWloe2JtdNbEtEE-59" parent="1" style="whiteSpace=wrap;html=1;" value="Double Points" vertex="1">
           <mxGeometry height="60" width="120" x="2800" y="1010" as="geometry" />
         </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-65" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-64" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-105" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-104" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-107" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-106" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-61" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="Should a Chess Piece Move" vertex="1">
@@ -298,13 +299,16 @@
         <mxCell id="8tV07jWloe2JtdNbEtEE-67" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-66" value="">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-69" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-68" value="">
+        <mxCell id="8tV07jWloe2JtdNbEtEE-69" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-64" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-68" value="Yes">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-64" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is there a piece to remove" vertex="1">
           <mxGeometry height="80" width="80" x="2820" y="1160" as="geometry" />
         </mxCell>
-        <mxCell id="8tV07jWloe2JtdNbEtEE-77" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-76" value="">
+        <mxCell id="8tV07jWloe2JtdNbEtEE-77" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-76" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-100" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-99" value="No">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-66" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="are there still moves left to make" vertex="1">
@@ -331,8 +335,110 @@
         <mxCell id="8tV07jWloe2JtdNbEtEE-74" parent="1" style="whiteSpace=wrap;html=1;" value="activate a ghost" vertex="1">
           <mxGeometry height="60" width="120" x="2800" y="1750" as="geometry" />
         </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-79" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-78" value="Yes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3090" y="1360" />
+              <mxPoint x="3090" y="1360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-81" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-76" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-80" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-76" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is there a piece to be promoted" vertex="1">
           <mxGeometry height="80" width="80" x="2980" y="1320" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-78" parent="1" style="whiteSpace=wrap;html=1;" value="promote the last moved piece" vertex="1">
+          <mxGeometry height="60" width="120" x="3120" y="1330" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-83" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-82" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-85" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-84" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-80" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="will the next move cause a promotion" vertex="1">
+          <mxGeometry height="80" width="80" x="2980" y="1480" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-82" parent="1" style="whiteSpace=wrap;html=1;" value="save the data for the piece to be promoted" vertex="1">
+          <mxGeometry height="60" width="120" x="3120" y="1490" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-87" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-84" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-86" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-84" parent="1" style="whiteSpace=wrap;html=1;" value="update the data for the piece to be removed" vertex="1">
+          <mxGeometry height="60" width="120" x="2960" y="1650" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-89" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-88" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-86" parent="1" style="whiteSpace=wrap;html=1;" value="update the move warning text" vertex="1">
+          <mxGeometry height="60" width="120" x="2960" y="1790" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-93" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-88" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-92" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-88" parent="1" style="whiteSpace=wrap;html=1;" value="run the next move" vertex="1">
+          <mxGeometry height="60" width="120" x="2960" y="1930" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-95" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-92" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-94" value="Yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-92" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="are there still moves left" vertex="1">
+          <mxGeometry height="80" width="80" x="2980" y="2060" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-94" parent="1" style="whiteSpace=wrap;html=1;" value="set the next piece to move flashing" vertex="1">
+          <mxGeometry height="60" width="120" x="3120" y="2070" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-97" parent="1" style="whiteSpace=wrap;html=1;" value="set Game over True" vertex="1">
+          <mxGeometry height="60" width="120" x="3000" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-103" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-99" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-102" value="No">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-99" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is Blitz Mode active" vertex="1">
+          <mxGeometry height="80" width="80" x="3140" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-102" parent="1" style="whiteSpace=wrap;html=1;" value="Activate Blitz mode" vertex="1">
+          <mxGeometry height="60" width="120" x="3280" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-104" parent="1" style="whiteSpace=wrap;html=1;" value="Decrease the time until a chess piece moves" vertex="1">
+          <mxGeometry height="60" width="120" x="2480" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-109" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-106" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-108" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-106" parent="1" style="whiteSpace=wrap;html=1;" value="Update the ghost&#39;s movement" vertex="1">
+          <mxGeometry height="60" width="120" x="2640" y="1330" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-111" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-108" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-110" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-108" parent="1" style="whiteSpace=wrap;html=1;" value="update all of the sprites" vertex="1">
+          <mxGeometry height="60" width="120" x="2640" y="1470" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-114" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-110" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-113" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-110" parent="1" style="whiteSpace=wrap;html=1;" value="check for collisions" vertex="1">
+          <mxGeometry height="60" width="120" x="2640" y="1610" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-115" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-113" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2400" y="1780" />
+              <mxPoint x="2400" y="200" />
+              <mxPoint x="2700" y="200" />
+            </Array>
+            <mxPoint x="2700" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-113" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="Draw Game Screen" vertex="1">
+          <mxGeometry height="60" width="120" x="2640" y="1750" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-116" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" value="Game Over Screen" vertex="1">
+          <mxGeometry height="60" width="120" x="3370" y="-180" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
