@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0" version="29.3.1">
   <diagram name="Page-1" id="nNP8QDWQ5Yi81dz9D2xR">
-    <mxGraphModel dx="3530" dy="2271" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="3977" dy="2467" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -437,8 +437,40 @@
         <mxCell id="8tV07jWloe2JtdNbEtEE-113" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="Draw Game Screen" vertex="1">
           <mxGeometry height="60" width="120" x="2640" y="1750" as="geometry" />
         </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-118" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-116" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-117" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="8tV07jWloe2JtdNbEtEE-116" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" value="Game Over Screen" vertex="1">
-          <mxGeometry height="60" width="120" x="3370" y="-180" as="geometry" />
+          <mxGeometry height="60" width="120" x="3750" y="-180" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-120" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-117" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="8tV07jWloe2JtdNbEtEE-119" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="3810" y="30" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-122" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-117" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="8tV07jWloe2JtdNbEtEE-121">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-117" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" value="show Game Over Screen" vertex="1">
+          <mxGeometry height="60" width="120" x="3750" y="-40" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-126" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-119" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-125" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-119" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is main menu pressed" vertex="1">
+          <mxGeometry height="80" width="80" x="3770" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-124" edge="1" parent="1" source="8tV07jWloe2JtdNbEtEE-121" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="8tV07jWloe2JtdNbEtEE-123" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-121" parent="1" style="rhombus;whiteSpace=wrap;html=1;" value="is play again pressed" vertex="1">
+          <mxGeometry height="80" width="80" x="3920" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-123" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" value="Game Screen" vertex="1">
+          <mxGeometry height="60" width="120" x="3900" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="8tV07jWloe2JtdNbEtEE-125" parent="1" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" value="Main Menu" vertex="1">
+          <mxGeometry height="60" width="120" x="3750" y="220" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
