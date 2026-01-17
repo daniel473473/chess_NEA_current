@@ -89,18 +89,22 @@ class Player(pygame.sprite.Sprite):
         self.y = self.MINHEIGHT
         self.rect.y = self.MINHEIGHT
         self.up = False
+        self.down = True
       if self.x < self.MINWIDTH:# left most limit
         self.x = self.MINWIDTH
         self.rect.x = self.MINWIDTH
         self.left = False
+        self.right = True
       if self.y > self.MAXHEIGHT:# down most limit
         self.y = self.MAXHEIGHT
         self.rect.y = self.MAXHEIGHT
         self.down = False
+        self.up = True
       if self.x > self.MAXWIDTH:# right most limit
         self.x = self.MAXWIDTH
         self.rect.x = self.MAXWIDTH
         self.right = False
+        self.left = True
 
 # fruit class
 class Fruit(pygame.sprite.Sprite):
@@ -580,7 +584,18 @@ class Pacman_chess_game():
                    self.player.rect.x = self.player.x
             else:
               self.game_over = True
-        self.player.stop()
+        if self.player.up:
+          self.player.up = False
+          self.player.down = True
+        elif self.player.down:
+          self.player.down = False
+          self.player.up = True
+        elif self.player.left:
+          self.player.left = False
+          self.player.right = True
+        elif self.player.right:
+          self.player.right = False
+          self.player.left = True
         
     # check for collisions with ghosts to when there is no energizer
     collided_pieces = pygame.sprite.spritecollide(self.player, self.ghosts, False)
