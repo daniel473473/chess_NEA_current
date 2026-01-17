@@ -874,7 +874,7 @@ class chess:# the whole game class
         return [[cell.clone() for cell in row] for row in board]# often causes a delay 10^-4
     
     def __str__(self):
-        return "".join(j.code if j.code else "p" for i in self.board for j in i)
+        return "".join(j.code + j.player if j.code else "p" for i in self.board for j in i)
 
 if __name__ == "__main__":
     game = chess()

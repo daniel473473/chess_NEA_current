@@ -344,28 +344,27 @@ def play_game(depth, show = False):
         if show:
             print(board.legal_moves)
         while legal == False:
-            if True or (turn == AI and not game_over):
-                if show:
-                    tick = time.time()
-                try:
-                    encoded_code, minimax_score = minimax(board, board.turn, depth, -math.inf, math.inf, True,)
-                except RecursionError:
-                    print("problem")
-                    input()
-                if show:
-                    print(time.time()- tick)
-                if not encoded_code[0] == "0": 
-                    for move, move_code in board.conversion_moves:
-                        if move[0] == encoded_code[0] and move[1] == encoded_code[1] and move[2] == encoded_code[2] and move[7] == encoded_code[7]:
-                            code = move_code
-                            break
-                    #code = board.encode(encoded_code)
-                    #if encoded_code[11] or encoded_code[10]:# if there is disambiguation needed
-                    #    print("disambiguation move:", code)
-                    #    print("encoded move:", encoded_code)
-                        #input()
-                else:
-                    code = encoded_code
+            if show:
+                tick = time.time()
+            try:
+                encoded_code, minimax_score = minimax(board, board.turn, depth, -math.inf, math.inf, True,)
+            except RecursionError:
+                print("problem")
+                input()
+            if show:
+                print(time.time()- tick)
+            if not encoded_code[0] == "0": 
+                for move, move_code in board.conversion_moves:
+                    if move[0] == encoded_code[0] and move[1] == encoded_code[1] and move[2] == encoded_code[2] and move[7] == encoded_code[7]:
+                        code = move_code
+                        break
+                #code = board.encode(encoded_code)
+                #if encoded_code[11] or encoded_code[10]:# if there is disambiguation needed
+                #    print("disambiguation move:", code)
+                #    print("encoded move:", encoded_code)
+                    #input()
+            else:
+                code = encoded_code
             if code in board.legal_moves:
                 legal = True
                 if show:
