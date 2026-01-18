@@ -10,6 +10,12 @@ def resource_path(relative_path):# function to get the path for files when using
 
     return os.path.join(base_path, relative_path)
 
+
+def user_data_path(relative_path):
+    return os.path.join(os.path.expanduser("~"), relative_path)
+
+
+
 def load_data(file_path):# function to load data from file to use, used for high scores
     try:
         # the file already exists

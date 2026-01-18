@@ -114,11 +114,11 @@ class Game_Button(Button):
         loading = False
         current_screen = game_screen
         score, time = current_screen.play(moves=moves, boards=boards, move_codes=move_codes, taken_pieces=taken_pieces, promotions=promotions)
-        data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
+        data = helper_functions.load_data(helper_functions.user_data_path("high_scores.json"))
         data["scores"].append({"score": score, "time": time, "difficulty": main_menu.depth})
         # sort the scores from highest to lowest
         data["scores"].sort(key=lambda x: x["score"], reverse=True)
-        helper_functions.store_data(helper_functions.resource_path("high_scores.json"), data)
+        helper_functions.store_data(helper_functions.user_data_path("high_scores.json"), data)
         current_screen = play_again_screen
         current_screen.reset()
         play_again_screen.update_score(score, time, main_menu.depth)
@@ -343,11 +343,11 @@ class High_Score_Screen(Base_Screen):
 
 
     def get_scores(self):# load all of the high score data
-        file_data = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))
+        file_data = helper_functions.load_data(helper_functions.user_data_path("high_scores.json"))
         if "scores" not in file_data:
             file_data["scores"] = []
-            helper_functions.store_data(helper_functions.resource_path("high_scores.json"), file_data)
-        self.scores = helper_functions.load_data(helper_functions.resource_path("high_scores.json"))["scores"]
+            helper_functions.store_data(helper_functions.user_data_path("high_scores.json"), file_data)
+        self.scores = helper_functions.load_data(helper_functions.user_data_path("high_scores.json"))["scores"]
         # first reset the score sprite
         self.score_sprite.image.fill(self.score_sprite.colour)
         for i, item in enumerate(self.scores):
