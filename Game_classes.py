@@ -1,5 +1,5 @@
 import pygame
-
+# DOESN'T SEEM TO BE USED
 # things to set up for the whole game
 pygame.init()
  
