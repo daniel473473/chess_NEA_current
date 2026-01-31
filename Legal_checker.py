@@ -131,6 +131,8 @@ def legalShortCastle(board, turn):
             if board[0][column].symbol == constants.KING and board[0][column].moved == False and board[0][column].player == "B":# check if the king has moved
                 kingFound = True
     return False
+
+
 def legalLongCastle(board, turn):
     kingFound = False
     rookFound = False

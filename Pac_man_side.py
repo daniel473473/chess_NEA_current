@@ -119,7 +119,6 @@ class Fruit(pygame.sprite.Sprite):
         self.rect.y = y
         self.points = points
 
-
 # energizer class
 class Energizer(pygame.sprite.Sprite):
     def __init__(self, color, x, y, size, points):
@@ -264,7 +263,6 @@ class Chess_Piece(pygame.sprite.Sprite):
 
   def __str__(self):
      return self.name
-
 
 # ghost class
 class Ghost(pygame.sprite.Sprite):
@@ -806,6 +804,7 @@ class Pacman_chess_game():
     while not self.game_over:
           self.play_step()
     return self.points, self.time
+
 
 if __name__ == "__main__":
     while True:
