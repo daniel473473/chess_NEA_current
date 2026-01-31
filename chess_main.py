@@ -398,9 +398,6 @@ def play_game(depth, show = False):
                 moves_used.append([[[0, 6], [0, 4]], [[0,5], [0,7]]] if encoded_code == "0-0" else [[[0, 2], [0, 4]], [[0, 3], [0, 0]]])
 
         turn = (turn + 1) % 2
-        if board.turn > 1000:
-            input("draw?")
-            game_over = True
     if show:
         board.display(board.board)
         print(f"Game Over {'White' if board.turn % 2 == 0 else 'Black'} wins")
