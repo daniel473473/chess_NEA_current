@@ -205,6 +205,7 @@ class Chess_Piece(pygame.sprite.Sprite):
     else:
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
+
   def set_image_stopped(self):
     self.image_state = "stopped"
     self.image.fill(self.colour)
@@ -220,6 +221,7 @@ class Chess_Piece(pygame.sprite.Sprite):
     if not flash_time is None: self.flash_time = flash_time
     self.start_flash_time = pygame.time.get_ticks()
 
+
   def flash_off(self):
     self.flashed = False
     if self.image_state == "moving":
@@ -227,6 +229,7 @@ class Chess_Piece(pygame.sprite.Sprite):
     elif self.image_state == "stopped":
         self.set_image_stopped()
   
+
   def flash_on(self):
     self.flashed = True
     self.image.fill(self.flashing_colour)
@@ -236,7 +239,6 @@ class Chess_Piece(pygame.sprite.Sprite):
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
 
-  
   def update(self):
     if self.moving:
         if (self.target_x - self.rect.x) * self.x_speed <= 0 and (self.target_y - self.rect.y) * self.y_speed <= 0:
@@ -260,6 +262,7 @@ class Chess_Piece(pygame.sprite.Sprite):
             self.flash_on()
         elif ((pygame.time.get_ticks() - self.start_flash_time) // self.flash_time) % 2 == 1 and self.flashed == True:
             self.flash_off()
+
 
   def __str__(self):
      return self.name
