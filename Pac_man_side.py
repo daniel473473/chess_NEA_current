@@ -313,7 +313,6 @@ class Ghost(pygame.sprite.Sprite):
         self.rect.y = self.y
         
           
-
     def change_direction(self, player_x, player_y, energized):
       if self.active == True:
         if energized:
@@ -349,6 +348,7 @@ class Ghost(pygame.sprite.Sprite):
               self.rect.x = self.x
               self.rect.y = self.y
 
+
     def go_home(self):
           self.move_to(self.home_x, self.home_y)
 
@@ -361,10 +361,13 @@ class Board:
         self.y = y
         self.cell_size = cell_size
 
+
     def set_view(self, x, y, cell_size):
         self.x = x
         self.y = y
         self.cell_size = cell_size
+
+
     def render(self, screen):
         for y in range(self.cell_count):
             for x in range(self.cell_count):
@@ -630,6 +633,7 @@ class Pacman_chess_game():
           self.check_next_move(sub_move)
      else:
         self.check_move(move[1], move[0])
+
 
   def check_move(self, start_coor, end_coor):
       piece = self.board.board[start_coor[0]][start_coor[1]]

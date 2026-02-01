@@ -63,6 +63,7 @@ class Button(pygame.sprite.Sprite):
         self.image_center = self.image.get_rect().center
         self.image.blit(self.text_sprite, self.text_sprite.get_rect(center = self.image_center))
 
+
     def update(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             if self.colour != self.selected_colour:
@@ -155,7 +156,6 @@ class Slider(Button):
         self.option_range = self.x_base_size / self.options # the distance between each allowed option
 
 
-
     def update(self):
         if not self.selected:
             super().update()
@@ -214,6 +214,7 @@ class Scroll_Bar(Button):
 
         self.selected = False # whether the scroll bar has been selected
         self.scroll = 0 # ratio of how scrolled through bar is
+
 
     def update(self):
         if not self.selected:
@@ -390,8 +391,6 @@ class Play_Again_Screen(Base_Screen):
         self.images.add(self.time_box)
         self.depth_box = actual_screen_objects.Text_Box(WIDTH * 0.35, HEIGHT * 0.35, WIDTH * 0.3, HEIGHT * 0.1, Pac_man_colours.BLUE, f"Difficulty : {self.difficulty}", int(HEIGHT * 0.1))
         self.images.add(self.depth_box)
-
-
 
 
     def update_score(self, score, time, difficulty):

@@ -19,10 +19,12 @@ class Piece:# the class used to create pieces
         self.position_history = []# the history of positions of the piece
         self.moved_history = []# the history of whether the piece has moved
  
+
     def move(self, x, y):# move the piece to a new position
         self.x = x
         self.y = y
         self.moved = True
+
 
     def undo_move(self):# undo the move of the piece
         self.x, self.y = self.position_history.pop()# get the last position
@@ -41,6 +43,7 @@ class Piece:# the class used to create pieces
     def set_next_taken(self, piece):
          self.taken_history.append(piece)
 
+
     def get_next_taken(self):
          return self.taken_history.pop()
 
@@ -48,11 +51,14 @@ class Piece:# the class used to create pieces
     def clone(self):
         return Piece(self.x, self.y, self.symbol, self.code, self.value, self.player, self.legal, self.list_moves, moved = self.moved)
     
+
     def __lt__(self, other):
          return self.value + self.x/10 + self.y/100 < other.value + other.x/10 + other.y/100
     
+
     def __gt__(self, other):
          return self.value + self.x/10 + self.y/100 > other.value + other.x/10 + other.y/100
+
 
     def __repr__(self):
         return self.code + " " + str(self.y) + " " + str(self.x)+ " " + self.player + " " + str(self.moved)
@@ -76,6 +82,7 @@ class Shadow_Pawn(Piece):# the class of the shadow pawn used for enpassant
                 self.pawn_row = pawnrow# the row of the pawn this links to
                 self.pawn_column = pawncolumn# the column of the pawn this links to
                 self.created = created# whether the piece has just been created
+
 
         def clone(self):
                 return Shadow_Pawn(self.x, self.y, self.pawn_row, self.pawn_column, self.player, self.symbol, self.code, self.value, self.legal, moved=self.moved, created=self.created)
