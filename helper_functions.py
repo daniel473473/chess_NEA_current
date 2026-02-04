@@ -31,3 +31,45 @@ def load_data(file_path):# function to load data from file to use, used for high
 def store_data(file_path, data):# function to store data to file, used for high scores
     with open(file_path, "w") as store_file:
         json.dump(data, store_file)
+
+
+class Stack: # stack data class
+    def __init__(self, input_stack = []):
+        self.__data = input_stack
+
+
+    def push(self, item):
+        self.__data.append(item)
+
+
+    def pop(self):
+        return self.__data.pop()
+
+
+    def peek(self):
+        return self.__data[-1]
+
+
+    def isEmpty(self):
+        return len(self.__data) == 0
+
+
+class Queue: # queue data class
+    def __init__(self, inital_data = []):
+        self.__data = inital_data
+
+
+    def enqueue(self, item):
+        self.__data.append(item)
+
+
+    def dequeue(self):
+        return self.__data.pop(0)
+
+
+    def peek(self):
+        return self.__data[0]
+
+
+    def isEmpty(self):
+        return len(self.__data) == 0
