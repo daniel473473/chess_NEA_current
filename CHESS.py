@@ -10,8 +10,7 @@ import helper_functions
 
 
 
-# TODO repetition stalemates
-# TODO insufficiant material stalemates
+# TODO change undo moves lists to stacks
 
 def underline(text):
     return f"\033[4m{text}\033[0m"# under line the text
