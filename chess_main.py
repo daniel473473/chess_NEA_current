@@ -9,6 +9,7 @@ import pieces
 import Legal_checker
 import copy
 import time
+import helper_functions
 
 
 
@@ -308,18 +309,18 @@ def play_game(depth, show = False):
 
 
     # moves used index 0 end pos index 1 start pos
-    moves_used = []
+    moves_used = helper_functions.Queue([])
 
     # codes for the moves to be displayed at the top of the screen
-    move_codes = []
+    move_codes = helper_functions.Queue([])
 
     # locations of all of the taken pieces
-    taken_pieces = []
+    taken_pieces = helper_functions.Queue([])
 
     # promotions that occurred during the game
-    promotions = []
+    promotions = helper_functions.Queue([])
 
-    boards = [copy.deepcopy(board.board)]
+    boards = helper_functions.Queue([copy.deepcopy(board.board)])
 
     # temp board sync stuff
     temp_board = [["  "] * 8 for _ in range(8)]
@@ -377,25 +378,25 @@ def play_game(depth, show = False):
         game_over = board.playStep(code)
         
         # add the board to the list of boards for history
-        boards.append(copy.deepcopy(board.board))
+        boards.enqueue(copy.deepcopy(board.board))
 
         # add the used moves the list of moves
-        move_codes.append(code)
+        move_codes.enqueue(code)
 
         # add taken pieces
-        taken_pieces.append(encoded_code[12] if not encoded_code[0] == "0" else None)
+        taken_pieces.enqueue(encoded_code[12] if not encoded_code[0] == "0" else None)
 
         # add if a piece promoted
-        promotions.append(encoded_code[7] if not encoded_code[0] == "0" else None)
+        promotions.enqueue(encoded_code[7] if not encoded_code[0] == "0" else None)
 
         if encoded_code[0] != "0":
-            moves_used.append(encoded_code[1:3])
+            moves_used.enqueue(encoded_code[1:3])
         else:
             encoded_code = board.decode_checks(encoded_code)
             if board.turn % 2 == 0:# if it is whites turn
-                moves_used.append([[[7, 6], [7, 4]], [[7,5], [7,7]]] if encoded_code == "0-0" else [[[7, 2], [7, 4]], [[7, 3], [7, 0]]])
+                moves_used.enqueue([[[7, 6], [7, 4]], [[7,5], [7,7]]] if encoded_code == "0-0" else [[[7, 2], [7, 4]], [[7, 3], [7, 0]]])
             else:
-                moves_used.append([[[0, 6], [0, 4]], [[0,5], [0,7]]] if encoded_code == "0-0" else [[[0, 2], [0, 4]], [[0, 3], [0, 0]]])
+                moves_used.enqueue([[[0, 6], [0, 4]], [[0,5], [0,7]]] if encoded_code == "0-0" else [[[0, 2], [0, 4]], [[0, 3], [0, 0]]])
 
         turn = (turn + 1) % 2
     if show:

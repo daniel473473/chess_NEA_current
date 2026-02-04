@@ -403,7 +403,7 @@ class Pacman_chess_game():
     self.images = pygame.sprite.Group()
 
     # reset the move warning
-    self.move_warning = actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.01, WIDTH * 0.4, HEIGHT * 0.08, Pac_man_colours.BLACK, f"Next Move : {self.move_codes[0]}", HEIGHT * 0.07)
+    self.move_warning = actual_screen_objects.Text_Box(WIDTH * 0.3, HEIGHT * 0.01, WIDTH * 0.4, HEIGHT * 0.08, Pac_man_colours.BLACK, f"Next Move : {self.move_codes.peek()}", HEIGHT * 0.07)
     self.images.add(self.move_warning)
     self.all_sprites_list.add(self.move_warning)
 
@@ -706,7 +706,7 @@ class Pacman_chess_game():
                   if not i.active:
                      i.active = True
                      break 
-       if len(self.moves) > 0:
+       if not self.moves.isEmpty():
           # update the data for the last moved piece
           if self.promotion_data:
             self.last_piece_moved.sprite_path = self.promotion_data[1]
@@ -717,7 +717,7 @@ class Pacman_chess_game():
 
           # change the piece for promotion
           
-          promotion = self.promotions.pop(0)
+          promotion = self.promotions.dequeue()
           if promotion is not None:
             if self.turn % 2 == 1:
               match promotion:
@@ -746,16 +746,16 @@ class Pacman_chess_game():
 
           
           # add the taken piece
-          self.piece_to_remove = False if self.taken_pieces[0] is None else self.board.board[self.taken_pieces[0][0]][self.taken_pieces[0][1]]
-          self.taken_pieces.pop(0)
+          self.piece_to_remove = False if self.taken_pieces.peek() is None else self.board.board[self.taken_pieces[0][0]][self.taken_pieces[0][1]]
+          self.taken_pieces.dequeue()
           # show the player the next move
-          self.move_warning.update_text(f"Next Move : {self.move_codes.pop(0)}")
-          self.run_next_move(self.moves.pop(0))
-          self.boards.pop(0)
+          self.move_warning.update_text(f"Next Move : {self.move_codes.dequeue()}")
+          self.run_next_move(self.moves.dequeue())
+          self.boards.dequeue()
           
           #print(self.moves)
-          if len(self.moves) > 0:
-            self.check_next_move(self.moves[0])
+          if not self.moves.isEmpty():
+            self.check_next_move(self.moves.peek())
 
           # increase the turn
           self.turn += 1
@@ -802,7 +802,7 @@ class Pacman_chess_game():
      return chess_main.play_game(depth)
 
 
-  def play(self, moves = [], boards = [], move_codes = [], taken_pieces = [], promotions = []):
+  def play(self, moves = helper_functions.Queue([]), boards = helper_functions.Queue([]), move_codes = helper_functions.Queue([]), taken_pieces = helper_functions.Queue([]), promotions = helper_functions.Queue([])):
     self.moves, self.boards, self.move_codes, self.taken_pieces, self.promotions = moves, boards, move_codes, taken_pieces, promotions
     print(self.move_codes)
 
