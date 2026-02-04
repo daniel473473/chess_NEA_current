@@ -57,12 +57,12 @@ class chess:# the whole game class
 
         self.White_pieces, self.Black_pieces = self.storePieces(self.board)# list of pieces for each player
 
-        self.shadow_pawn_history = []# list of shadow pawns that have been created
+        self.shadow_pawn_history = helper_functions.Stack([])# list of shadow pawns that have been created
 
         self.shadow_pawns = []
 
         # history of the mandatory move delays
-        self.mandatory_move_delay_history = []
+        self.mandatory_move_delay_history = helper_functions.Stack([])
 
         # time since last pawn/taking move
         self.mandatory_move_delay = 0
@@ -374,7 +374,7 @@ class chess:# the whole game class
 
         # save the delay
         if saveHistory:
-            self.mandatory_move_delay_history.append(self.mandatory_move_delay)
+            self.mandatory_move_delay_history.push(self.mandatory_move_delay)
 
 
         # increment the mandatory move delay
@@ -665,12 +665,12 @@ class chess:# the whole game class
                 self.board[shadow_pawn.y][shadow_pawn.x].created = False# leave a turn to be taken
             else:
                 if save_history:
-                    self.shadow_pawn_history.append(shadow_pawn)
+                    self.shadow_pawn_history.push(shadow_pawn)
                     updated = True
                 self.board[shadow_pawn.y][shadow_pawn.x] = pieces.Empty_Cell(shadow_pawn.y, shadow_pawn.x)
                 self.shadow_pawns.remove(shadow_pawn)
         if save_history and not updated:# if no shadow pawns were removed
-            self.shadow_pawn_history.append(None)
+            self.shadow_pawn_history.push(None)
 
 
     def moveInput(self, move = None):
