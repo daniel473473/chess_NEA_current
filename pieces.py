@@ -16,9 +16,9 @@ class Piece:# the class used to create pieces
         self.legal = legal# the function checking if the move was legal
         self.list_moves = listmoves# the function that returns a list of legal moves for the piece
         self.moved = moved# has the piece moved
-        self.taken_history = []# the history of taken pieces
-        self.position_history = []# the history of positions of the piece
-        self.moved_history = []# the history of whether the piece has moved
+        self.taken_history = helper_functions.Stack([])# the history of taken pieces
+        self.position_history = helper_functions.Stack([])# the history of positions of the piece
+        self.moved_history = helper_functions.Stack([])# the history of whether the piece has moved
  
 
     def move(self, x, y):# move the piece to a new position
@@ -37,12 +37,12 @@ class Piece:# the class used to create pieces
     def update_history(self, piece):# update the history of the piece
         # update histories
         self.set_next_taken(piece)
-        self.position_history.append((self.x, self.y))
-        self.moved_history.append(self.moved)
+        self.position_history.push((self.x, self.y))
+        self.moved_history.push(self.moved)
 
 
     def set_next_taken(self, piece):
-         self.taken_history.append(piece)
+         self.taken_history.push(piece)
 
 
     def get_next_taken(self):
