@@ -2,6 +2,7 @@ import constants
 import Legal_checker
 import chess_list_functions
 import math
+import helper_functions
 
 class Piece:# the class used to create pieces
     
