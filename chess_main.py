@@ -196,7 +196,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         move = mv
                 game.undoMove(game.board[mv[1][0]][mv[1][1]])
             else:
-                mv = game.decode_checks(mv)
+                mv = game.decode_checks(mv, playing = False)
                 game.decode_castle(mv, save_history=True)
                 new_score = minimax(game, turn + 1, depth-1, alpha, beta, False)[1]
                 if game.inCheck(turn + 1, game.board):
@@ -204,7 +204,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         mv += "#"
                     else:
                         mv += "+"
-                if game.decode_checks(mv) == "0-0":
+                if game.decode_checks(mv, playing = False) == "0-0":
                     game.undoShortCastle()
                 else:
                     game.undoLongCastle()
@@ -252,7 +252,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         move = mv
                 game.undoMove(game.board[mv[1][0]][mv[1][1]])
             else:
-                mv = game.decode_checks(mv)
+                mv = game.decode_checks(mv, playing = False)
                 game.decode_castle(mv, save_history=True)
                 new_score = minimax(game, turn + 1, depth-1, alpha, beta, True)[1]
                 if game.inCheck(turn + 1, game.board):
@@ -260,7 +260,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         mv += "#"
                     else:
                         mv += "+"
-                if game.decode_checks(mv) == "0-0":
+                if game.decode_checks(mv, playing = False) == "0-0":
                     game.undoShortCastle()
                 else:
                     game.undoLongCastle()
@@ -365,4 +365,4 @@ def play_game(depth, show = False):
 
 if __name__ == "__main__":
     while True:
-        play_game(1, show=True)
+        play_game(2, show=True)

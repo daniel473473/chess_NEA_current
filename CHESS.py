@@ -10,7 +10,6 @@ import helper_functions
 
 
 
-# TODO change undo moves lists to stacks
 
 def underline(text):
     return f"\033[4m{text}\033[0m"# under line the text
@@ -28,8 +27,6 @@ class chess:# the whole game class
 
     def reset(self):# set the board back to the start position
 
-        self.moves_used = []
-
         # first board Position
 
         self.board = [
@@ -42,10 +39,7 @@ class chess:# the whole game class
             [pieces.Pawn(6, 0, "W"), pieces.Pawn(6, 1, "W"), pieces.Pawn(6, 2, "W"), pieces.Pawn(6, 3, "W"), pieces.Pawn(6, 4, "W"), pieces.Pawn(6, 5, "W"), pieces.Pawn(6, 6, "W"), pieces.Pawn(6, 7, "W")],
             [pieces.Rook(7, 0, "W"), pieces.Knight(7, 1, "W"), pieces.Bishop(7, 2, "W"), pieces.Queen(7, 3, "W"), pieces.King(7, 4, "W"), pieces.Bishop(7, 5, "W"), pieces.Knight(7, 6, "W"), pieces.Rook(7, 7, "W")],
         ]
-        '''
-        self.board = [[pieces.Empty_Cell(0,0),pieces.Empty_Cell(0,1),pieces.Empty_Cell(0,2),pieces.Empty_Cell(0,3),pieces.King(0,4,"B"),pieces.Empty_Cell(0,5),pieces.Empty_Cell(0,6),pieces.Empty_Cell(0,7)],[pieces.Empty_Cell(1,0),pieces.Empty_Cell(1,1),pieces.Empty_Cell(1,2),pieces.Empty_Cell(1,3),pieces.Empty_Cell(1,4),pieces.Empty_Cell(1,5),pieces.Empty_Cell(1,6),pieces.Empty_Cell(1,7)],[pieces.Rook(2,0,"W"),pieces.Empty_Cell(2,1),pieces.Empty_Cell(2,2),pieces.Empty_Cell(2,3),pieces.Empty_Cell(2,4),pieces.Empty_Cell(2,5),pieces.Empty_Cell(2,6),pieces.Empty_Cell(2,7)],[pieces.Empty_Cell(3,0),pieces.Empty_Cell(3,1),pieces.Empty_Cell(3,2),pieces.Empty_Cell(3,3),pieces.Empty_Cell(3,4),pieces.Empty_Cell(3,5),pieces.Empty_Cell(3,6),pieces.Empty_Cell(3,7)],[pieces.Empty_Cell(4,0),pieces.Empty_Cell(4,1),pieces.Empty_Cell(4,2),pieces.Empty_Cell(4,3),pieces.Empty_Cell(4,4),pieces.Empty_Cell(4,5),pieces.Empty_Cell(4,6),pieces.Empty_Cell(4,7)],[pieces.Empty_Cell(5,0),pieces.Empty_Cell(5,1),pieces.Empty_Cell(5,2),pieces.Empty_Cell(5,3),pieces.Empty_Cell(5,4),pieces.Empty_Cell(5,5),pieces.Empty_Cell(5,6),pieces.Empty_Cell(5,7)],[pieces.Empty_Cell(6,0),pieces.Empty_Cell(6,1),pieces.Empty_Cell(6,2),pieces.Empty_Cell(6,3),pieces.Empty_Cell(6,4),pieces.Empty_Cell(6,5),pieces.Empty_Cell(6,6),pieces.Empty_Cell(6,7)],[pieces.Rook(7,0,"W"),pieces.Empty_Cell(7,1),pieces.Empty_Cell(7,2),pieces.Empty_Cell(7,3),pieces.King(7,4,"W"),pieces.Empty_Cell(7,5),pieces.Empty_Cell(7,6),pieces.Empty_Cell(7,7)]]
 
-        #'''
         # set the first turn to be 0
 
         self.turn = 1
@@ -66,9 +60,6 @@ class chess:# the whole game class
 
         # time since last pawn/taking move
         self.mandatory_move_delay = 0
-
-
-        self.move_time = 0
 
         # boards seen
         self.boards = {}
@@ -117,24 +108,24 @@ class chess:# the whole game class
         return X+Y
 
 
-    def encode(self, move):# 0 --> the piece code, 1 --> the end position, 2 --> the start position, 3 --> check, 4 --> checkmate, 5 --> stalemate, 6 --> castled, 7 --> promotion
+    def encode(self, move):
         code = str(move[0])
-        if move[8]:
-            if move[0] == constants.PAWN_CODE:
+        if move[8]: # add the symbol for captures
+            if move[0] == constants.PAWN_CODE:# disambiguate the move for a pawn capture
                 code += chr(move[2][1] + ord("a"))
             code += "x"
         if move[10] and move[0]:# disambiguate in y direction
             code += str(8 - move[2][0])
         if move[11] and move[0]:# disambiguate in x direction
             code += chr(move[2][1] + ord("a"))
-        code += self.encodeString(move[1][1], move[1][0])
-        if not move[7] is None:
+        code += self.encodeString(move[1][1], move[1][0])# add the end position of the move
+        if not move[7] is None:# add the symbol for promotion and what piece is promoted to
             code += "="+move[7]
-        if move[3]:
+        if move[3]:# add the symbol for check
             code += "+"
-        elif move[4]:
+        elif move[4]:# add the symbol for checkmate
             code += "#"
-        if move[5]:
+        if move[5]:# add the symbol for stalemate
             code += "-"
         return code
 
@@ -145,19 +136,21 @@ class chess:# the whole game class
         return X, Y
 
 
-    def decode_checks(self, code):
+    def decode_checks(self, code, playing = True):# update the state of the game based off the given move if it is actually making the move
         if code[-1] == "-":# check for stalemate
-            self.drawn = True
+            if playing:
+                self.drawn = True
             code = code[:-1]
         if code[-1] == "+":# check for check
             code = code[:-1]
         elif code[-1] == "#":# check for checkmate
-            self.winner = "W" if self.turn % 2 == 1 else "B"
+            if playing:
+                self.winner = "W" if self.turn % 2 == 1 else "B"
             code = code[:-1]
         return code
 
 
-    def decode_castle(self, code, save_history = False):
+    def decode_castle(self, code, save_history = False):# check which way the king is castling and run that castle
         castled = False
         if code == "0-0":
                 castled = True
@@ -168,7 +161,7 @@ class chess:# the whole game class
         return castled
 
 
-    def decode(self, code, board, turn):# decode the chess abrivations
+    def decode(self, code, turn):# decode the chess abrivations
 
         # reset the variables
 
@@ -178,8 +171,6 @@ class chess:# the whole game class
         startXCoor = -1
         startYCoor = -1
         taking = False
-        check = False
-        checkmate = False 
         promotion = False
         knownX = -1
         knownY = -1 
@@ -197,21 +188,17 @@ class chess:# the whole game class
 
         if (code[1] == "x"):
             if code != code.lower():# if a non pawn piece took
-                if Legal_checker.legalTaking(board, turn, endXCoor, endYCoor):# if it will take a piece legally
-                    taking = True
-                    code = code[0] + code[2:]
+                taking = True
+                code = code[0] + code[2:]
             else:
-                if Legal_checker.legalTaking(board, turn, endXCoor, endYCoor, pawn=True):# if it will take a piece legally
-                    taking = True
-                    code = code[0] + code[2:]
+                taking = True
+                code = code[0] + code[2:]
 
         if code.lower() == code:# pawn move
             piece = constants.PAWN
-            #print(code, len(code), code[0].isalpha())
             if len(code) >= 3:# check for disambiguation
                 if code[0].isalpha():# check for correct character
                     knownX = ord(code[0]) - ord("a")
-                    #print(knownX, knownY)
         else:# non pawn move
             if len(code) in range(4,6):# is there disambiguation
                     if code[-3].isnumeric():# is there disambiguation in the y direction
@@ -236,7 +223,7 @@ class chess:# the whole game class
         return endXCoor, endYCoor, startXCoor, startYCoor, promotion, taking
 
 
-    def checkCheck(self, row, column, opposing_player = None, board = None, turn = 0):# checks if a square is in check
+    def checkCheck(self, row, column, opposing_player = None, board = None):# checks if a square is in check
         for attacking_row, attacking_column, in [(row + 1, column + 2,),# return in check from knights
                                                     (row - 1, column + 2,),
                                                     (row + 1, column - 2,),
@@ -424,12 +411,6 @@ class chess:# the whole game class
                         self.White_pieces.remove(self.board[endYCoor][endXCoor])
                     elif self.board[endYCoor][endXCoor].player == "B":
                         self.Black_pieces.remove(self.board[endYCoor][endXCoor])
-                    else:
-                        self.display(self.board)
-                        print("ERROR")
-                        print(self.encode((self.board[startYCoor][startXCoor].code, (endYCoor, endXCoor), (startYCoor, startXCoor), False, False, False, False, promotion.symbol[-1] if promotion else None, taking)))
-                        print(self.White_pieces, "\n", self.Black_pieces)
-                        raise Exception("ERROR")
                 
         else:
             if self.board[startYCoor][startXCoor].code == constants.PAWN_CODE and abs(startYCoor - endYCoor) > 1:# shadow pawn for enpassant
@@ -508,11 +489,6 @@ class chess:# the whole game class
                     self.White_pieces.append(second_old_piece)
                 elif second_old_piece.player == "B":
                     self.Black_pieces.append(second_old_piece)
-                else:
-                    self.display(self.board)
-                    print("ERROR")
-                    input(second_old_piece)
-                    raise Exception("ERROR")
 
         elif old_piece.player == "W":# add the piece back to the list of pieces
             self.White_pieces.append(old_piece)
@@ -525,21 +501,6 @@ class chess:# the whole game class
         # ensure the order of the lists are constant
         self.White_pieces.sort()
         self.Black_pieces.sort()
-
-        #self.moves_used.pop()# remove the last move from the list of moves used
-
-
-    def check_pieces(self, strng):
-        current_white, current_black = self.storePieces(self.board)
-        if not (current_white == self.White_pieces and current_black == self.Black_pieces):
-            print(strng)
-            print("ERROR: Desync between board and piece lists")
-            print("White pieces on board:", current_white)
-            print("White pieces in list:", self.White_pieces)
-            print("Black pieces on board:", current_black)
-            print("Black pieces in list:", self.Black_pieces)
-            self.display(self.board)
-            raise Exception("Desync between board and piece lists")
 
 
     def undoShadowPawns(self):
@@ -558,6 +519,9 @@ class chess:# the whole game class
 
 
     def undoShortCastle(self):
+
+        # undo the mandatory move delay changes
+        self.mandatory_move_delay = self.mandatory_move_delay_history.pop()
 
         self.undoShadowPawns()
 
@@ -583,6 +547,10 @@ class chess:# the whole game class
 
 
     def undoLongCastle(self):
+
+        # undo the mandatory move delay changes
+        self.mandatory_move_delay = self.mandatory_move_delay_history.pop()
+
         self.undoShadowPawns()
 
         self.turn -= 1
@@ -607,6 +575,13 @@ class chess:# the whole game class
 
 
     def shortCastle(self, save_history = False):
+        # save the delay
+        if save_history:
+            self.mandatory_move_delay_history.push(self.mandatory_move_delay)
+
+        # increment the mandatory move delay
+        self.mandatory_move_delay += 1
+
         if self.turn % 2 == 1:# if it is white's turn
             self.board[7][6] = self.board[7][4]# move the king
             self.board[7][6].y, self.board[7][6].x = 7, 6
@@ -631,6 +606,13 @@ class chess:# the whole game class
 
 
     def longCastle(self, save_history = False):
+        # save the delay
+        if save_history:
+            self.mandatory_move_delay_history.push(self.mandatory_move_delay)
+
+        # increment the mandatory move delay
+        self.mandatory_move_delay += 1
+
         if self.turn % 2 == 1:# if it is white's turn
             self.board[7][2] = self.board[7][4]# move the king
             self.board[7][2].y, self.board[7][2].x = 7, 2
@@ -680,16 +662,7 @@ class chess:# the whole game class
         return move
 
 
-    def isDisambiguated(self, move):
-        pass
-
-
     def listLegalMoves(self, Check = True):
-        
-        if self.inCheck(self.turn + 1, self.board):
-            print(f"illegal board : turn {'white' if self.turn % 2 == 1 else 'black'}")
-            self.display(self.board)
-            raise Exception("Illegal board given")
         
         legal_moves = []
 
@@ -730,18 +703,13 @@ class chess:# the whole game class
                     elif not (prev_move[2][1] == legal_moves[i][2][1]):# if the x coordinates are different
                         legal_moves[j][11] = True# disambiguate X
                         legal_moves[i][11] = True
-                    else:
-                        print(seen_moves)
-                        print(legal_moves)
-                        print("Conflict move:", legal_moves[i], prev_move)
-                        raise Exception("Duplicate move found that cannot be disambiguated")
             seen_moves.append(key_data)
 
 
         # sort the moves by score for minimax
         legal_moves.sort(key=lambda x: x[9], reverse=True)
         # add castling moves after so sorting works
-        if Legal_checker.legalShortCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 5, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board, turn=self.turn + 1):# check if you can short castle
+        if Legal_checker.legalShortCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 5, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board):# check if you can short castle
             self.shortCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0")
@@ -750,10 +718,10 @@ class chess:# the whole game class
                         legal_moves[0] += "#"
                     else:
                         legal_moves[0] += "+"
-                #elif len(self.listLegalMoves(Check=True)) == 0:# check for stalemate
-                #    legal_moves[0] += "-"
+                elif self.mandatory_move_delay >= 50:# check for stalemate
+                    legal_moves[0] += "-"
             self.undoShortCastle()
-        if Legal_checker.legalLongCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 3, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board, turn=self.turn + 1):# check if you can long castle
+        if Legal_checker.legalLongCastle(self.board, self.turn) and not self.inCheck(self.turn, self.board) and not self.checkCheck(0 if self.turn % 2 == 0 else 7, 3, opposing_player = "B" if self.turn % 2 == 1 else "W", board=self.board):# check if you can long castle
             self.longCastle(save_history=True)
             if not self.inCheck(self.turn + 1, self.board):
                 legal_moves.insert(0, "0-0-0")
@@ -762,8 +730,8 @@ class chess:# the whole game class
                         legal_moves[0] += "#"
                     else:
                         legal_moves[0] += "+"
-                #elif len(self.listLegalMoves(Check=True)) == 0:# check for stalemate
-                #    legal_moves[0] += "-"
+                elif self.mandatory_move_delay >= 50:# check for stalemate
+                    legal_moves[0] += "-"
             self.undoLongCastle()
         return legal_moves
 
@@ -787,8 +755,8 @@ class chess:# the whole game class
                 takes_at = (move[0], move[1])
         
         if check:
-            self.movePiece(move[0], move[1], row, column, turn, promotion=promotion, taking=taking, saveHistory=True)# one second delay depth 3
-            if self.inCheck(turn, self.board):# one second delay depth 3
+            self.movePiece(move[0], move[1], row, column, turn, promotion=promotion, taking=taking, saveHistory=True)
+            if self.inCheck(turn, self.board):
                 legal = False
             elif self.inCheck(turn + 1, self.board):
                     if len(self.listLegalMoves(Check=True)) == 0:# check if the check is mate
@@ -803,7 +771,7 @@ class chess:# the whole game class
                 len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
                 (state in self.boards and self.boards[state] == 2):# check for stalemate
                 is_stalemate = True
-            self.undoMove(self.board[move[0]][move[1]])# one second delay depth 3
+            self.undoMove(self.board[move[0]][move[1]])
 
         # score the move for sorting so minimax is more efficient
         score = 0
@@ -827,9 +795,9 @@ class chess:# the whole game class
         code = self.decode_checks(code)
         castled = self.decode_castle(code)
         if not(castled):
-            endXCoor, endYCoor, startXCoor, startYCoor, promotion, taking = self.decode(code, self.board, self.turn)
+            endXCoor, endYCoor, startXCoor, startYCoor, promotion, taking = self.decode(code, self.turn)
             self.movePiece(endYCoor, endXCoor, startYCoor, startXCoor, self.turn, promotion=promotion, taking=taking)
-        done = self.gameEnd(self.board, self.turn)# whether the game is over
+        done = self.gameEnd()# whether the game is over
 
         return done
 
@@ -857,14 +825,11 @@ class chess:# the whole game class
             if piece.code == constants.KING_CODE:
                 y, x = piece.y, piece.x
         
-        if x == -1 or y == -1:
-            self.display(self.board)
-            raise Exception("king not found")
 
-        return self.checkCheck(y, x, opposing_player="B" if turn % 2 == 1 else "W", board=board, turn=turn)
+        return self.checkCheck(y, x, opposing_player="B" if turn % 2 == 1 else "W", board=board)
 
 
-    def gameEnd(self, board, turn):
+    def gameEnd(self):
         if self.winner is not None or self.drawn:# if the game is over
             return True
         return False
