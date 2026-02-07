@@ -9,12 +9,6 @@ import helper_functions
 import sys
 import actual_screen_objects
 
-# TODO
-# make captures from enpassant work properly
-# make promotion work properly
-# make ghosts spawn from the edges
-# give ghosts an image
-# PAWN TOOK BACKWARDS???
 
 # things to set up for the whole game
 pygame.init()
