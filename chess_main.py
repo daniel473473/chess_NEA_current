@@ -160,7 +160,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
             else: # Draw
                 return (None, 0)
         else: # Depth is zero, so score the board
-            return (None, score_position(game, turn) * np.random.normal(1, 0.1) * (1 if maximizingPlayer else -1))# some times causes a delay
+            return (None, score_position(game, turn) * np.random.normal(1, 0.1) * (1 if maximizingPlayer else -1))
 
 
     # Maximize the score if it's the maximizing player's turn
@@ -173,13 +173,11 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                 piece = game.board[mv[2][0]][mv[2][1]]
                 opposing_piece = game.board[mv[1][0]][mv[1][1]]
                 taking = opposing_piece.symbol != constants.EMPTY_CELL or (piece.player != opposing_piece.player and opposing_piece.code == constants.SHADOW_PAWN_CODE and piece.code == constants.PAWN_CODE)
-                game.movePiece(mv[1][0], mv[1][1], mv[2][0], mv[2][1], turn, promotion=mv[7], taking=taking, saveHistory=True) # never causes a delay
-                if not game.inCheck(turn, game.board):# one second delay depth 3
+                game.movePiece(mv[1][0], mv[1][1], mv[2][0], mv[2][1], turn, promotion=mv[7], taking=taking, saveHistory=True)
+                if not game.inCheck(turn, game.board):
                     if game.inCheck(turn + 1, game.board):
                         if len(game.listLegalMoves(Check=True)) == 0:# check if the check is mate
                             mv[4] = True
-                            #game.undoMove(game.board[mv[1][0]][mv[1][1]])
-                            #return (mv, math.inf)
                         else:
                             mv[3] = True
                     total_pieces = game.White_pieces + game.Black_pieces
@@ -190,10 +188,6 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
                         (state in game.boards and game.boards[state] == 2):# check for stalemate
                         mv[5] = True
-                        #game.undoMove(game.board[mv[1][0]][mv[1][1]])
-                        #return (mv, 0)
-                    # quintessentence search
-                    #new_score = minimax(game, turn + 1, (1 if  depth == 1 and game.checkCheck(opposing_piece.y, opposing_piece.x, opposing_player = opposing_piece.player, board = game.board) else depth - 1), alpha, beta, False)[1]
 
                     new_score = minimax(game, turn + 1, depth - 1, alpha, beta, False)[1]
 
@@ -224,11 +218,6 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
             # Prune the search if the alpha value is greater than or equal to beta.
             if alpha >= beta:
                 break
-        #if not move:
-        #    if winning_move(game, game.board, turn + 1):# checkmate
-        #        return (None, math.inf * (-1 if maximizingPlayer else 1))
-        #    else: # Draw
-        #        return (None, 0)
         return move, value
 
     else: # Minimize the score if it's the minimizing player's turn.
@@ -240,13 +229,11 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                 piece = game.board[mv[2][0]][mv[2][1]]
                 opposing_piece = game.board[mv[1][0]][mv[1][1]]
                 taking = opposing_piece.symbol != constants.EMPTY_CELL or (opposing_piece.player != piece.player and opposing_piece.code == constants.SHADOW_PAWN_CODE and piece.code == constants.PAWN_CODE)
-                game.movePiece(mv[1][0], mv[1][1], mv[2][0], mv[2][1], turn, promotion=mv[7], taking=taking, saveHistory=True)# almost never causes a delay 10^-4
-                if not game.inCheck(turn, game.board):# one second delay depth 3
+                game.movePiece(mv[1][0], mv[1][1], mv[2][0], mv[2][1], turn, promotion=mv[7], taking=taking, saveHistory=True)
+                if not game.inCheck(turn, game.board):
                     if game.inCheck(turn + 1, game.board):
                         if len(game.listLegalMoves(Check=True)) == 0:# check if the check is mate
                             mv[4] = True
-                            #game.undoMove(game.board[mv[1][0]][mv[1][1]])
-                            #return (mv, -math.inf)
                         else:
                             mv[3] = True
                     total_pieces = game.White_pieces + game.Black_pieces
@@ -257,11 +244,6 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                         len(total_pieces) == 4 and ("B", 1) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] and ("B", 0) in [(piece.code, (piece.x + piece.y) % 2) for piece in total_pieces] or\
                         (state in game.boards and game.boards[state] == 2):# check for stalemate
                         mv[5] = True
-                        #game.undoMove(game.board[mv[1][0]][mv[1][1]])
-                        #return (mv, 0)
-                    
-                    # quitenicence search
-                    #new_score = minimax(game, turn + 1, (1 if  depth == 1 and game.checkCheck(opposing_piece.y, opposing_piece.x, opposing_player = opposing_piece.player, board = game.board) else depth - 1), alpha, beta, True)[1]
 
                     new_score = minimax(game, turn + 1, depth - 1, alpha, beta, True)[1]
 
@@ -291,11 +273,6 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
             # Prune the search if the alpha value is greater than or equal to beta
             if alpha >= beta:
                 break
-        #if not move:
-        #    if winning_move(game, game.board, turn + 1):# checkmate
-        #        return (None, math.inf * (-1 if maximizingPlayer else 1))
-        #    else: # Draw
-        #        return (None, 0)
         return move, value
    
 
@@ -320,61 +297,42 @@ def play_game(depth, show = False):
     # promotions that occurred during the game
     promotions = helper_functions.Queue([])
 
+    # all board states of the game
     boards = helper_functions.Queue([copy.deepcopy(board.board)])
 
-    # temp board sync stuff
+    '''# temp board sync stuff
     temp_board = [["  "] * 8 for _ in range(8)]
     blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
     whitenames = ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
     for i in range(16):
         temp_board[i//8][i%8] = blacknames[i]
-        temp_board[7 - i//8][i%8] = whitenames[i]
+        temp_board[7 - i//8][i%8] = whitenames[i]'''
 
 
     # Main game loop
     while not game_over:
         if show:
             board.display(board.board)
-        legal = False
         board.conversion_moves = [[i, board.encode(i)] if not i[0] == "0" else [i, i] for i in board.listLegalMoves()]
         board.legal_moves = [i[1] if not i[0] == "0" else i for i in board.conversion_moves]
         board.conversion_moves = filter(lambda x: not x[0][0] == "0", board.conversion_moves)
         if show:
             print(board.legal_moves)
-        while legal == False:
-            if show:
-                tick = time.time()
-            try:
-                encoded_code, minimax_score = minimax(board, board.turn, depth, -math.inf, math.inf, True,)
-            except RecursionError:
-                print("problem")
-                input()
-            if show:
-                print(time.time()- tick)
-            if not encoded_code[0] == "0": 
-                for move, move_code in board.conversion_moves:
-                    if move[0] == encoded_code[0] and move[1] == encoded_code[1] and move[2] == encoded_code[2] and move[7] == encoded_code[7]:
-                        code = move_code
-                        break
-                #code = board.encode(encoded_code)
-                #if encoded_code[11] or encoded_code[10]:# if there is disambiguation needed
-                #    print("disambiguation move:", code)
-                #    print("encoded move:", encoded_code)
-                    #input()
-            else:
-                code = encoded_code
-            if code in board.legal_moves:
-                legal = True
-                if show:
-                    print(code, minimax_score)
-                    print(board.mandatory_move_delay)
-            else:
-                print("illegal move attempted:", code)
-                print("legal moves are:", board.legal_moves)
-                board.legal_moves = [board.encode(i) if not i[0] == "0" else i for i in board.listLegalMoves()]
-                print(board.legal_moves, "\n",board.White_pieces, "\n", board.Black_pieces, "\n", board.shadow_pawns, "\n", board.turn)
-                print(code, minimax_score)
-                raise Exception("illegal move")
+        if show:
+            tick = time.time()
+        encoded_code, minimax_score = minimax(board, board.turn, depth, -math.inf, math.inf, True,)
+        if show:
+            print(time.time()- tick)
+        if not encoded_code[0] == "0": 
+            for move, move_code in board.conversion_moves:
+                if move[0] == encoded_code[0] and move[1] == encoded_code[1] and move[2] == encoded_code[2] and move[7] == encoded_code[7]:
+                    code = move_code
+                    break
+        else:
+            code = encoded_code
+        if show:
+            print(code, minimax_score)
+            print(board.mandatory_move_delay)
         game_over = board.playStep(code)
         
         # add the board to the list of boards for history
