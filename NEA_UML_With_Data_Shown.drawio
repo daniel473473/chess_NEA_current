@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0" version="29.3.6">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:147.0) Gecko/20100101 Firefox/147.0" version="29.3.8">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1869" dy="535" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -22,7 +22,7 @@
           <mxGeometry height="26" width="160" y="218" as="geometry" />
         </mxCell>
         <mxCell id="lMycvE6U_FkHigBZRzd_-4" parent="WIyWlLk6GJQsqaUBKTNV-1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" value="chess" vertex="1">
-          <mxGeometry height="690" width="180" x="-570" y="60" as="geometry">
+          <mxGeometry height="660" width="180" x="-570" y="60" as="geometry">
             <mxRectangle height="30" width="100" x="-130" y="-20" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
@@ -32,8 +32,8 @@
         <mxCell id="lMycvE6U_FkHigBZRzd_-6" parent="lMycvE6U_FkHigBZRzd_-4" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" value="" vertex="1">
           <mxGeometry height="8" width="180" y="220" as="geometry" />
         </mxCell>
-        <mxCell id="lMycvE6U_FkHigBZRzd_-7" parent="lMycvE6U_FkHigBZRzd_-4" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="&lt;div&gt;reset&lt;/div&gt;&lt;div&gt;storePieces&lt;/div&gt;&lt;div&gt;getPieces&lt;/div&gt;&lt;div&gt;display&lt;/div&gt;&lt;div&gt;encodeString&lt;/div&gt;&lt;div&gt;encode&lt;/div&gt;&lt;div&gt;decodeString&lt;/div&gt;&lt;div&gt;decode_checks&lt;/div&gt;&lt;div&gt;decode_castle&lt;/div&gt;&lt;div&gt;decode&lt;/div&gt;&lt;div&gt;checkCheck&lt;/div&gt;&lt;div&gt;findPiece&lt;/div&gt;&lt;div&gt;movePiece&lt;/div&gt;&lt;div&gt;undoMove&lt;/div&gt;&lt;div&gt;undoShadowPawns&lt;/div&gt;&lt;div&gt;undoShortCastle&lt;/div&gt;&lt;div&gt;undoLongCastle&lt;/div&gt;&lt;div&gt;shortCastle&lt;/div&gt;&lt;div&gt;longCastle&lt;/div&gt;&lt;div&gt;removeShadows&lt;/div&gt;&lt;div&gt;moveInput&lt;/div&gt;&lt;div&gt;isDisambiguated&lt;/div&gt;&lt;div&gt;listLegalMoves&lt;/div&gt;&lt;div&gt;add_new_move&lt;/div&gt;&lt;div&gt;playStep&lt;/div&gt;&lt;div&gt;play&lt;/div&gt;&lt;div&gt;inCheck&lt;/div&gt;&lt;div&gt;gameEnd&lt;/div&gt;&lt;div&gt;copy_board&lt;/div&gt;&lt;div&gt;__str__&lt;/div&gt;" vertex="1">
-          <mxGeometry height="462" width="180" y="228" as="geometry" />
+        <mxCell id="lMycvE6U_FkHigBZRzd_-7" parent="lMycvE6U_FkHigBZRzd_-4" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="&lt;div&gt;reset&lt;/div&gt;&lt;div&gt;storePieces&lt;/div&gt;&lt;div&gt;getPieces&lt;/div&gt;&lt;div&gt;display&lt;/div&gt;&lt;div&gt;encodeString&lt;/div&gt;&lt;div&gt;encode&lt;/div&gt;&lt;div&gt;decodeString&lt;/div&gt;&lt;div&gt;decode_checks&lt;/div&gt;&lt;div&gt;decode_castle&lt;/div&gt;&lt;div&gt;decode&lt;/div&gt;&lt;div&gt;checkCheck&lt;/div&gt;&lt;div&gt;findPiece&lt;/div&gt;&lt;div&gt;movePiece&lt;/div&gt;&lt;div&gt;undoMove&lt;/div&gt;&lt;div&gt;undoShadowPawns&lt;/div&gt;&lt;div&gt;undoShortCastle&lt;/div&gt;&lt;div&gt;undoLongCastle&lt;/div&gt;&lt;div&gt;shortCastle&lt;/div&gt;&lt;div&gt;longCastle&lt;/div&gt;&lt;div&gt;removeShadows&lt;/div&gt;&lt;div&gt;moveInput&lt;/div&gt;&lt;div&gt;listLegalMoves&lt;/div&gt;&lt;div&gt;add_new_move&lt;/div&gt;&lt;div&gt;playStep&lt;/div&gt;&lt;div&gt;play&lt;/div&gt;&lt;div&gt;inCheck&lt;/div&gt;&lt;div&gt;gameEnd&lt;/div&gt;&lt;div&gt;copy_board&lt;/div&gt;&lt;div&gt;__str__&lt;/div&gt;" vertex="1">
+          <mxGeometry height="432" width="180" y="228" as="geometry" />
         </mxCell>
         <mxCell id="iH-35to-S8IjUnmPke4A-9" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="lMycvE6U_FkHigBZRzd_-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="lMycvE6U_FkHigBZRzd_-128">
           <mxGeometry relative="1" as="geometry">
