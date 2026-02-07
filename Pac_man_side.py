@@ -678,7 +678,6 @@ class Pacman_chess_game():
           self.time_text = self.font.render(f"Time : {str(self.time)}", True, (255, 255, 255))
       elif event.type == self.blitz_timer:# end the game after blitz time
         self.points *= 2 # double the score for finishing the game
-        print("Final Score : ", self.points)
         self.game_over = True
         self.blitz = False
         pygame.time.set_timer(self.blitz_timer, 0)
@@ -686,7 +685,6 @@ class Pacman_chess_game():
     # check if another piece should move
     if not Chess_Piece.pieces_moving and self.start_delay < 0:
        if self.piece_to_remove:
-           print(f"piece there? {self.piece_to_remove in self.pieces}")
            # add a energizer where the piece was
            e1 = Energizer(Pac_man_colours.YELLOW, *self.convert_board_coors(self.piece_to_remove.board_x, self.piece_to_remove.board_y, offset = self.cell_size // 2 - self.board.cell_size // 12 - 1), self.cell_size // 6, 10)
            self.all_sprites_list.add(e1)
@@ -747,7 +745,6 @@ class Pacman_chess_game():
           self.run_next_move(self.moves.dequeue())
           self.boards.dequeue()
           
-          #print(self.moves)
           if not self.moves.isEmpty():
             self.check_next_move(self.moves.peek())
 
@@ -788,8 +785,6 @@ class Pacman_chess_game():
     screen.blit(self.time_text, self.time_text_rect)
     pygame.display.flip()
     clock.tick(60)
-    #if clock.get_fps() < 60:
-    #  print(clock.get_fps())
 
 
   def prepare_game(self, depth):
@@ -798,7 +793,6 @@ class Pacman_chess_game():
 
   def play(self, moves = helper_functions.Queue([]), boards = helper_functions.Queue([]), move_codes = helper_functions.Queue([]), taken_pieces = helper_functions.Queue([]), promotions = helper_functions.Queue([])):
     self.moves, self.boards, self.move_codes, self.taken_pieces, self.promotions = moves, boards, move_codes, taken_pieces, promotions
-    print(self.move_codes)
 
     self.reset()
 
@@ -812,8 +806,6 @@ if __name__ == "__main__":
       game = Pacman_chess_game()
       start_time = time.time()
       moves, boards, move_codes, taken_pieces, promotions = chess_main.play_game(1)
-      #moves = [[[4, 4], [6, 4]], [[3, 4], [1, 4]], [[5, 5], [7, 6]], [[2, 5], [0, 3]], [[3, 1], [7, 5]], [[3, 2], [0, 5]], [[[7, 6], [7, 4]], [[7, 5], [7, 7]]], [[2, 2], [1, 2]], [[5, 3], [3, 1]], [[3, 3], [1, 3]], [[3, 3], [4, 4]], [[4, 6], [0, 2]], [[2, 2], [3, 3]], [[2, 2], [1, 1]], [[5, 2], [7, 1]], [[2, 7], [1, 7]], [[4, 4], [5, 2]], [[6, 5], [3, 2]], [[6, 5], [7, 5]], [[2, 6], [2, 5]], [[3, 4], [5, 5]], [[7, 3], [4, 6]], [[2, 6], [3, 4]], [[2, 6], [1, 5]], [[4, 2], [5, 3]], [[6, 2], [7, 3]], [[5, 3], [6, 3]], [[2, 5], [0, 6]], [[6, 2], [6, 5]], [[1, 3], [0, 1]], [[4, 5], [7, 2]], [[2, 1], [1, 3]], [[2, 4], [4, 2]], [[0, 5], [0, 7]], [[2, 3], [4, 5]], [[0, 7], [0, 5]], [[3, 2], [4, 4]], [[1, 3], [0, 1]], [[1, 3], [2, 4]], [[1, 3], [0, 1]], [[7, 4], [7, 0]], [[0, 3], [0, 4]], [[1, 3], [3, 2]], [[1, 3], [0, 3]], [[4, 5], [2, 3]], [[0, 4], [0, 7]], [[5, 4], [4, 5]], [[0, 3], [0, 0]], [[4, 3], [5, 3]], [[0, 4], [0, 3]], [[5, 2], [6, 2]], [[0, 3], [0, 0]], [[5, 7], [6, 7]], [[0, 4], [0, 3]], [[7, 2], [5, 2]], [[4, 4], [0, 4]], [[7, 5], [7, 2]], [[0, 4], [0, 0]], [[7, 7], [7, 6]], [[3, 2], [2, 2]], [[3, 2], [4, 3]], [[2, 2], [1, 3]], [[7, 3], [7, 5]], [[3, 7], [2, 7]], [[4, 3], [7, 3]], [[0, 2], [0, 0]], [[4, 6], [6, 6]], [[0, 4], [0, 2]], [[3, 7], [4, 6]], [[3, 7], [2, 6]], [[7, 3], [4, 3]], [[0, 2], [0, 0]], [[5, 0], [6, 0]], [[0, 4], [0, 2]], [[7, 6], [7, 7]], [[0, 2], [0, 0]], [[4, 0], [5, 0]], [[0, 4], [0, 2]], [[3, 0], [4, 0]], [[0, 2], [0, 0]], [[2, 0], [3, 0]], [[0, 4], [0, 2]], [[7, 7], [7, 6]], [[0, 2], [0, 0]], [[5, 1], [6, 1]], [[0, 4], [0, 2]], [[4, 1], [5, 1]], [[4, 7], [3, 7]], [[5, 3], [7, 3]], [[2, 6], [1, 6]], [[4, 3], [5, 3]], [[0, 2], [0, 0]], [[3, 1], [4, 1]], [[3, 1], [2, 2]], [[4, 7], [4, 3]], [[2, 0], [3, 1]], [[4, 1], [4, 7]], [[3, 0], [2, 0]], [[7, 1], [4, 1]], [[4, 0], [3, 0]], [[7, 2], [5, 4]], [[3, 2], [0, 2]], [[5, 0], [5, 2]]]
       print(time.time() - start_time)
-      #print(moves)
       game.play(moves, boards, move_codes, taken_pieces, promotions)
       print(game.points)
