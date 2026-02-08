@@ -300,14 +300,6 @@ def play_game(depth, show = False):
     # all board states of the game
     boards = helper_functions.Queue([copy.deepcopy(board.board)])
 
-    '''# temp board sync stuff
-    temp_board = [["  "] * 8 for _ in range(8)]
-    blacknames = ["BR", "BN", "BB", "BQ", "BK", "BB", "BN", "BR", "BP", "BP", "BP", "BP", "BP", "BP", "BP", "BP"]
-    whitenames = ["WR", "WN", "WB", "WQ", "WK", "WB", "WN", "WR", "WP", "WP", "WP", "WP", "WP", "WP", "WP", "WP"]
-    for i in range(16):
-        temp_board[i//8][i%8] = blacknames[i]
-        temp_board[7 - i//8][i%8] = whitenames[i]'''
-
 
     # Main game loop
     while not game_over:
