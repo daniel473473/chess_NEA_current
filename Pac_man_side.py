@@ -554,9 +554,10 @@ class Pacman_chess_game():
     if collected_energizers:
         for energizer in collected_energizers:
             self.points += energizer.points
-        # create a timer for the energizer to last for
-        self.energized = True
-        pygame.time.set_timer(self.energized_timer, 3000)
+        if not self.blitz:
+          # create a timer for the energizer to last for
+          self.energized = True # player becomes energised unless blitz mode is active
+          pygame.time.set_timer(self.energized_timer, 3000)
 
         self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
     
@@ -581,7 +582,8 @@ class Pacman_chess_game():
                    self.player.x -= (self.player.x + self.player.width) - piece.rect.x
                    self.player.rect.x = self.player.x
             else:
-              self.game_over = True
+              pass
+              #self.game_over = True
         if self.player.up:
           self.player.up = False
           self.player.down = True
@@ -610,7 +612,8 @@ class Pacman_chess_game():
               self.points += 2 ** (self.dead_ghosts_this_round - 1) * 50
               self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
             else:
-              self.game_over = True
+              pass
+              #self.game_over = True
 
 
   def run_next_move(self, move):
@@ -761,9 +764,9 @@ class Pacman_chess_game():
                 i.time_to_move /= 2
              for piece in self.pieces:
                  piece.flashing = False
-          if self.energized: # turn off energized for end of game
-             self.energized = False
-             pygame.time.set_timer(self.energized_timer, 0)
+             if self.energized: # turn off energized for end of game
+                self.energized = False
+                pygame.time.set_timer(self.energized_timer, 0)
     else:
        self.start_delay -= 1
     
