@@ -213,7 +213,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                     value = new_score
                     move = mv
 
-            alpha = max(alpha, value)
+            alpha = max(alpha, value if value else alpha)
 
             # Prune the search if the alpha value is greater than or equal to beta.
             if alpha >= beta:
@@ -268,7 +268,7 @@ def minimax(game, turn, depth, alpha, beta, maximizingPlayer):
                 if not value or new_score < value: # Update the best move and alpha value.
                     value = new_score
                     move = mv
-            beta = min(beta, value)
+            beta = min(beta, value if value else beta)
 
             # Prune the search if the alpha value is greater than or equal to beta
             if alpha >= beta:
@@ -358,3 +358,4 @@ def play_game(depth, show = False):
 if __name__ == "__main__":
     while True:
         play_game(2, show=True)
+        input()
