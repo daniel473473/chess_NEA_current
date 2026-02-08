@@ -738,7 +738,7 @@ class Pacman_chess_game():
 
           
           # add the taken piece
-          self.piece_to_remove = False if self.taken_pieces.peek() is None else self.board.board[self.taken_pieces[0][0]][self.taken_pieces[0][1]]
+          self.piece_to_remove = False if self.taken_pieces.peek() is None else self.board.board[self.taken_pieces.peek()[0]][self.taken_pieces.peek()[1]]
           self.taken_pieces.dequeue()
           # show the player the next move
           self.move_warning.update_text(f"Next Move : {self.move_codes.dequeue()}")
