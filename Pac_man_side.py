@@ -582,8 +582,7 @@ class Pacman_chess_game():
                    self.player.x -= (self.player.x + self.player.width) - piece.rect.x
                    self.player.rect.x = self.player.x
             else:
-              pass
-              #self.game_over = True
+              self.game_over = True
         if self.player.up:
           self.player.up = False
           self.player.down = True
@@ -612,8 +611,7 @@ class Pacman_chess_game():
               self.points += 2 ** (self.dead_ghosts_this_round - 1) * 50
               self.text = self.font.render(f"Score : {str(self.points)}", True, (255, 255, 255))
             else:
-              pass
-              #self.game_over = True
+              self.game_over = True
 
 
   def run_next_move(self, move):
