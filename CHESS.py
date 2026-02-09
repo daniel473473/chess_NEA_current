@@ -836,7 +836,7 @@ class chess:# the whole game class
 
 
     def copy_board(self, board):
-        return [[cell.clone() for cell in row] for row in board]# often causes a delay 10^-4
+        return [[cell.clone() for cell in row] for row in board]
     
     def __str__(self):
         return "".join(j.code + j.player if j.code else "p" for i in self.board for j in i)
