@@ -418,4 +418,3 @@ if __name__ == "__main__":
     current_screen = main_menu
     while True:
         current_screen.play_step()
-    #current_screen.buttons.sprites()[1].click()
