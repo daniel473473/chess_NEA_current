@@ -11,13 +11,9 @@ import threading
 pygame.init()
  
  
-# GLOBAL VARIABLES
-COLOR = (255, 100, 98)
-SURFACE_COLOR = (167, 255, 100)
 # set up the size of the screen to be size of device's screen
 WIDTH, HEIGHT = pygame.display.get_desktop_sizes()[0]
  
-RED = (255, 0, 0)
 size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
 clock = pygame.time.Clock()
